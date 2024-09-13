@@ -8,6 +8,12 @@ public class Board : MonoBehaviour
     public int m_height = 30;
     public int m_width = 10;
     public int m_header = 8;
+    Transform[,] m_grid;
+
+    private void Awake()
+    {
+        m_grid = new Transform[m_width,m_height];
+    }
 
 
     // Start is called before the first frame update
