@@ -12,33 +12,33 @@ public class Shape : MonoBehaviour
         transform.position += moveDirection;
     }
 
-    void MoveUp()
+   public void MoveUp()
     {
         Move(Vector3.up);
     }
 
-    void MoveDown()
+    public void MoveDown()
     {
         Move(Vector3.down);
     }
 
-    void MoveLeft()
+   public void MoveLeft()
     {
         Move(Vector3.left);
     }
 
-    void MoveRight()
+    public void MoveRight()
     {
         Move(Vector3.right);
     }
 
-    void RotateLeft()
+   public void RotateLeft()
     {
         if(m_canRotate)
              transform.Rotate(0, 0, 90);
     }
 
-    void RotateRight()
+    public void RotateRight()
     {
         if(m_canRotate)
              transform.Rotate(0, 0, -90);
