@@ -49,7 +49,7 @@ public class Board : MonoBehaviour
 
     bool IsWithinBoard(int x, int y)
     {
-        return (x >= 0 && x <= m_width && y>=0);
+        return x >= 0 && x < m_width && y>=0;
     }
 
     public bool IsValidPosition(Shape shape)

@@ -25,12 +25,39 @@ public class GameController : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    void Update()
+    void PlayerInput()
     {
-        if(m_board == null || m_spawner == null)
+        if(Input.GetButtonDown("MoveRight"))
         {
-            return;
+            m_activeShape.MoveRight();
+            if(!m_board.IsValidPosition(m_activeShape))
+            {
+                m_activeShape.MoveLeft();
+            }
+            
+        }
+        else if(Input.GetButtonDown("MoveLeft"))
+        {
+             m_activeShape.MoveLeft();
+            if(!m_board.IsValidPosition(m_activeShape))
+            {
+                m_activeShape.MoveRight();
+            }
+        }
+        else if(Input.GetButtonDown("Rotate"))
+        {
+            m_activeShape.RotateRight();
+            if(!m_board.IsValidPosition(m_activeShape))
+                m_activeShape.RotateLeft();
+
+        }
+        else if(Input.GetButtonDown("MoveDown"))
+        {
+            m_dropInterval /= 4;               
+        }
+        else if(Input.GetButtonUp("MoveDown"))
+        {
+            m_dropInterval *= 4;
         }
 
         if(Time.time > m_timeToDrop)
@@ -51,5 +78,18 @@ public class GameController : MonoBehaviour
 
             m_timeToDrop = Time.time + m_dropInterval;
         }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if(m_board == null || m_spawner == null)
+        {
+            return;
+        }
+
+        PlayerInput();
+
+        
     }
 }
