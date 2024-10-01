@@ -9,6 +9,9 @@ public class GameController : MonoBehaviour
    private Shape m_activeShape;
    private float m_timeToDrop;
    private float m_dropInterval = 0.25f;
+   private float m_timeToNextKey;
+   private float m_keyRepeatRate = 0.15f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,10 +28,26 @@ public class GameController : MonoBehaviour
         
     }
 
-    void PlayerInput()
+   
+
+    // Update is called once per frame
+    void Update()
     {
-        if(Input.GetButtonDown("MoveRight"))
+        if(m_board == null || m_spawner == null)
         {
+            return;
+        }
+
+        PlayerInput();
+
+        
+    }
+
+     void PlayerInput()
+    {
+        if((Input.GetButton("MoveRight") && Time.time > m_timeToNextKey) || Input.GetButtonDown("MoveRight"))
+        {
+            m_timeToNextKey = m_keyRepeatRate + Time.time;
             m_activeShape.MoveRight();
             if(!m_board.IsValidPosition(m_activeShape))
             {
@@ -36,16 +55,17 @@ public class GameController : MonoBehaviour
             }
             
         }
-        else if(Input.GetButtonDown("MoveLeft"))
+        else if((Input.GetButton("MoveLeft") && Time.time > m_timeToNextKey) || Input.GetButtonDown("MoveLeft"))
         {
+            m_timeToNextKey = m_keyRepeatRate + Time.time;
              m_activeShape.MoveLeft();
             if(!m_board.IsValidPosition(m_activeShape))
             {
                 m_activeShape.MoveRight();
             }
         }
-        else if(Input.GetButtonDown("Rotate"))
-        {
+        else if(Input.GetButtonDown("Rotate") )
+        {            
             m_activeShape.RotateRight();
             if(!m_board.IsValidPosition(m_activeShape))
                 m_activeShape.RotateLeft();
@@ -67,9 +87,7 @@ public class GameController : MonoBehaviour
                 m_activeShape.MoveDown();
                 if(!m_board.IsValidPosition(m_activeShape))
                 {
-                     m_activeShape.MoveUp();
-                     m_board.StoreShapeInGrid(m_activeShape);
-                     m_activeShape = m_spawner.SpawnShape(); 
+                   LandShape(); 
                 }
                 
 
@@ -80,16 +98,12 @@ public class GameController : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void LandShape()
     {
-        if(m_board == null || m_spawner == null)
-        {
-            return;
-        }
+        m_activeShape.MoveUp();
+        m_board.StoreShapeInGrid(m_activeShape);
+        m_activeShape = m_spawner.SpawnShape(); 
 
-        PlayerInput();
-
-        
+        m_board.ClearAllRows();
     }
 }

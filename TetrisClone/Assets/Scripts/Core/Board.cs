@@ -89,4 +89,61 @@ public class Board : MonoBehaviour
        
         
     }
+
+    private bool IsComplete(int y)
+    {
+        for(int x = 0; x < m_width; x++)
+        {
+            if(m_grid[x,y] == null)
+                return false;
+        }
+        return true;
+    }
+
+    private void ClearRow(int y)
+    {
+        for(int x = 0; x < m_width; ++x)
+        {
+            if(m_grid[x,y] != null)
+                Destroy(m_grid[x,y].gameObject);
+            
+            m_grid[x,y] = null;
+        }
+    }
+
+    private void ShiftOneRowDown(int y)
+    {
+        for(int x = 0; x < m_width; ++x)
+        {
+            if(m_grid[x,y] != null)
+            {
+                m_grid[x,y-1] = m_grid[x,y];
+                m_grid[x,y] = null;
+                m_grid[x,y-1].position += new Vector3(0, -1, 0); 
+            }
+        }
+    }
+
+    private void ShiftRowsDown(int startY)
+    {
+        for(int i = startY; i < m_height; ++i)
+        {
+            ShiftOneRowDown(i);
+        }
+    }
+
+    public void ClearAllRows()
+    {
+        for(int y = 0; y < m_height; ++y)
+        {
+            if(IsComplete(y))
+            {
+                ClearRow(y);
+                ShiftRowsDown(y+1);
+                y--;
+            }
+        }
+    }
+
+
 }
