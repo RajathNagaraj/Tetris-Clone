@@ -28,6 +28,19 @@ public class Board : MonoBehaviour
         
     }
 
+    public bool IsOverLimit(Shape shape)
+    {
+        foreach(Transform child in shape.transform)
+        {
+            if(child.position.y > m_height - m_header)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     bool IsOccupied(int x, int y, Shape shape)
     {
         return(m_grid[x,y] != null && m_grid[x,y].parent != shape.transform);

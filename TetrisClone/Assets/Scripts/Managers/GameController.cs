@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -11,10 +12,12 @@ public class GameController : MonoBehaviour
    private float m_dropInterval = 0.25f;
    private float m_timeToNextKey;
    private float m_keyRepeatRate = 0.15f;
-
+    private bool m_gameOver = false;
+    public GameObject m_gameOverPanel;
     // Start is called before the first frame update
     void Start()
     {
+        m_gameOverPanel.SetActive(false);
         m_board = GameObject.FindGameObjectWithTag("Board").GetComponent<Board>();
         m_spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<Spawner>();
         if(m_spawner != null)
@@ -33,7 +36,7 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(m_board == null || m_spawner == null)
+        if(m_board == null || m_spawner == null || m_gameOver)
         {
             return;
         }
@@ -41,6 +44,12 @@ public class GameController : MonoBehaviour
         PlayerInput();
 
         
+    }
+
+    public void Restart()
+    {
+        Debug.Log("Restarted Level");
+        SceneManager.LoadScene("Gameplay");
     }
 
      void PlayerInput()
@@ -87,7 +96,15 @@ public class GameController : MonoBehaviour
                 m_activeShape.MoveDown();
                 if(!m_board.IsValidPosition(m_activeShape))
                 {
-                   LandShape(); 
+                   if(m_board.IsOverLimit(m_activeShape))
+                   {
+                      GameOver();
+                   }
+                   else
+                   {
+                      LandShape(); 
+                   }
+                   
                 }
                 
 
@@ -96,6 +113,14 @@ public class GameController : MonoBehaviour
 
             m_timeToDrop = Time.time + m_dropInterval;
         }
+    }
+
+    private void GameOver()
+    {
+         m_activeShape.MoveUp();
+         m_gameOver = true;
+         m_gameOverPanel.SetActive(true);
+         Debug.Log("Game Over");
     }
 
     private void LandShape()
