@@ -41,9 +41,7 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        PlayerInput();
-
-        
+        PlayerInput();       
     }
 
     public void Restart()

@@ -56,7 +56,7 @@ public class SoundManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateMusic();
+        
     }
 
     public void ToggleMusic()
@@ -71,7 +71,7 @@ public class SoundManager : MonoBehaviour
         {
             if(m_musicEnabled)
             {
-                 m_randomMusicClip = GetRandomClip(m_musicClips);
+                m_randomMusicClip = GetRandomClip(m_musicClips);
                 PlayBackgroundMusic(m_randomMusicClip);
             }
             else

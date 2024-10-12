@@ -1944,7 +1944,6 @@ MonoBehaviour:
   m_moveSound: {fileID: 0}
   m_dropSound: {fileID: 0}
   m_gameOverSound: {fileID: 0}
-  m_backgroundMusic: {fileID: 8300000, guid: 8e6afcfcba29249349c399c7826ebf58, type: 3}
   m_musicSource: {fileID: 1062888974}
   m_musicClips:
   - {fileID: 8300000, guid: 8e6afcfcba29249349c399c7826ebf58, type: 3}
