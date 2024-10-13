@@ -1438,6 +1438,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_iconTrue: {fileID: 21300000, guid: d6721fd02c936b640ae8929f2841e953, type: 3}
   m_iconFalse: {fileID: 21300000, guid: 254d0bcf5526f0b4b992cbbef9dd074f, type: 3}
+  m_defaultIconState: 1
 --- !u!224 &1136150086 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3960083598289706289, guid: 2b934aa5fb83983438b642dcf20de57f, type: 3}
@@ -2008,7 +2009,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28bd468ccdd0ac54b863ec2ad27585de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_musicEnabled: 0
+  m_musicEnabled: 1
   m_fxEnabled: 1
   m_musicVolume: 0.471
   m_fxVolume: 1
@@ -2028,6 +2029,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e753dc3dea92f4b1c81255878103653f, type: 3}
   - {fileID: 8300000, guid: 8b9eee15a25ac4457bc8de1db8deed46, type: 3}
   m_gameOverVocalClip: {fileID: 8300000, guid: dde698f7e18ad439d93644afcb0de99b, type: 3}
+  m_musicIconToggle: {fileID: 1835174938}
+  m_fxIconToggle: {fileID: 1103027626}
 --- !u!1 &1522726953
 GameObject:
   m_ObjectHideFlags: 0
@@ -2652,6 +2655,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_iconTrue: {fileID: 21300000, guid: 80640817172dd1a4abfc36bf7793047b, type: 3}
   m_iconFalse: {fileID: 21300000, guid: b6e4a5527f8717e458c30595326372df, type: 3}
+  m_defaultIconState: 1
 --- !u!1 &1847055965 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 332752969641817946, guid: 2b934aa5fb83983438b642dcf20de57f, type: 3}
