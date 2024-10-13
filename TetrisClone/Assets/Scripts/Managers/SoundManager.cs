@@ -15,10 +15,13 @@ public class SoundManager : MonoBehaviour
 
     public AudioClip m_rowClearSound;
     public AudioClip m_moveSound;
+    public AudioClip m_errorSound;
     public AudioClip m_dropSound;
     public AudioClip m_gameOverSound;
     public AudioSource m_musicSource;
     public AudioClip[] m_musicClips;
+    public AudioClip[] m_vocalClips;
+    public AudioClip m_gameOverVocalClip;
 
     AudioClip m_randomMusicClip;
 
@@ -79,5 +82,10 @@ public class SoundManager : MonoBehaviour
                 m_musicSource.Stop();
             }
         }
+    }
+
+    public void ToggleFX()
+    {
+        m_fxEnabled = !m_fxEnabled;
     }
 }

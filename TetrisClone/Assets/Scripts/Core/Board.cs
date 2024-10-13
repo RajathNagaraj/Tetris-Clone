@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,8 @@ public class Board : MonoBehaviour
     public int m_width = 10;
     public int m_header = 8;
     Transform[,] m_grid;
+    public int m_rowsCompleted = 0;
+    public Action OnRowCompleted = delegate{}; 
 
     private void Awake()
     {
@@ -122,6 +125,10 @@ public class Board : MonoBehaviour
             
             m_grid[x,y] = null;
         }
+
+        OnRowCompleted?.Invoke();
+       
+       
     }
 
     private void ShiftOneRowDown(int y)
@@ -147,11 +154,13 @@ public class Board : MonoBehaviour
 
     public void ClearAllRows()
     {
+        m_rowsCompleted = 0;
         for(int y = 0; y < m_height; ++y)
         {
             if(IsComplete(y))
             {
                 ClearRow(y);
+                ++m_rowsCompleted;
                 ShiftRowsDown(y+1);
                 y--;
             }

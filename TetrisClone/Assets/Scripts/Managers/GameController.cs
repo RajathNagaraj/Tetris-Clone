@@ -14,12 +14,16 @@ public class GameController : MonoBehaviour
    private float m_keyRepeatRate = 0.15f;
     private bool m_gameOver = false;
     public GameObject m_gameOverPanel;
+    private SoundManager m_soundManager;
+    private Camera mainCamera;
     // Start is called before the first frame update
     void Start()
     {
         m_gameOverPanel.SetActive(false);
         m_board = GameObject.FindGameObjectWithTag("Board").GetComponent<Board>();
         m_spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<Spawner>();
+        m_soundManager = FindObjectOfType<SoundManager>();
+        mainCamera = Camera.main;
         if(m_spawner != null)
         {
             m_spawner.transform.position = Vectorf.Round(m_spawner.transform.position);
@@ -28,6 +32,11 @@ public class GameController : MonoBehaviour
                  m_activeShape = m_spawner.SpawnShape();
             }
         }
+
+        m_board.OnRowCompleted += ()=>
+        {
+            PlaySound(m_soundManager.m_rowClearSound);
+        };
         
     }
 
@@ -36,7 +45,7 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(m_board == null || m_spawner == null || m_gameOver)
+        if(m_board == null || m_activeShape == null || m_spawner == null || m_soundManager == null || m_gameOver)
         {
             return;
         }
@@ -58,7 +67,12 @@ public class GameController : MonoBehaviour
             m_activeShape.MoveRight();
             if(!m_board.IsValidPosition(m_activeShape))
             {
+                PlaySound(m_soundManager.m_errorSound);
                 m_activeShape.MoveLeft();
+            }
+            else
+            {
+                PlaySound(m_soundManager.m_moveSound);
             }
             
         }
@@ -68,14 +82,27 @@ public class GameController : MonoBehaviour
              m_activeShape.MoveLeft();
             if(!m_board.IsValidPosition(m_activeShape))
             {
+                PlaySound(m_soundManager.m_errorSound);
                 m_activeShape.MoveRight();
+            }
+            else
+            {
+                PlaySound(m_soundManager.m_moveSound);
             }
         }
         else if(Input.GetButtonDown("Rotate") )
         {            
             m_activeShape.RotateRight();
             if(!m_board.IsValidPosition(m_activeShape))
+            {
+                PlaySound(m_soundManager.m_errorSound);
                 m_activeShape.RotateLeft();
+            }
+            else
+            {
+                PlaySound(m_soundManager.m_moveSound);
+            }
+               
 
         }
         else if(Input.GetButtonDown("MoveDown"))
@@ -118,6 +145,8 @@ public class GameController : MonoBehaviour
          m_activeShape.MoveUp();
          m_gameOver = true;
          m_gameOverPanel.SetActive(true);
+         PlaySound(m_soundManager.m_gameOverSound);
+         PlaySound(m_soundManager.m_gameOverVocalClip);
          Debug.Log("Game Over");
     }
 
@@ -128,5 +157,22 @@ public class GameController : MonoBehaviour
         m_activeShape = m_spawner.SpawnShape(); 
 
         m_board.ClearAllRows();
+
+        if(m_board.m_rowsCompleted > 1)
+        {
+            AudioClip randomVocalClip = m_soundManager.GetRandomClip(m_soundManager.m_vocalClips);
+            PlaySound(randomVocalClip);
+        }
+
+        PlaySound(m_soundManager.m_dropSound);
     }
+
+    void PlaySound(AudioClip sound)
+    {
+        if(sound != null && m_soundManager.m_fxEnabled)
+        {
+            AudioSource.PlayClipAtPoint(sound,mainCamera.transform.position,m_soundManager.m_fxVolume);
+        }
+    }
+    
 }
