@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,7 +28,7 @@ public class SoundManager : MonoBehaviour
 
     public AudioClip GetRandomClip(AudioClip[] clips)
     {
-        int randomIndex = UnityEngine.Random.Range(0, clips.Length);
+        int randomIndex = Random.Range(0, clips.Length);
         return clips[randomIndex];
     }
 
