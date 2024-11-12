@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -63,47 +64,15 @@ public class GameController : MonoBehaviour
     {
         if((Input.GetButton("MoveRight") && Time.time > m_timeToNextKey) || Input.GetButtonDown("MoveRight"))
         {
-            m_timeToNextKey = m_keyRepeatRate + Time.time;
-            m_activeShape.MoveRight();
-            if(!m_board.IsValidPosition(m_activeShape))
-            {
-                PlaySound(m_soundManager.m_errorSound);
-                m_activeShape.MoveLeft();
-            }
-            else
-            {
-                PlaySound(m_soundManager.m_moveSound);
-            }
-            
+            ProcessInput(() => m_activeShape.MoveRight(), () => m_activeShape.MoveLeft());            
         }
         else if((Input.GetButton("MoveLeft") && Time.time > m_timeToNextKey) || Input.GetButtonDown("MoveLeft"))
         {
-            m_timeToNextKey = m_keyRepeatRate + Time.time;
-             m_activeShape.MoveLeft();
-            if(!m_board.IsValidPosition(m_activeShape))
-            {
-                PlaySound(m_soundManager.m_errorSound);
-                m_activeShape.MoveRight();
-            }
-            else
-            {
-                PlaySound(m_soundManager.m_moveSound);
-            }
+           ProcessInput(() => m_activeShape.MoveLeft(), () => m_activeShape.MoveRight());
         }
         else if(Input.GetButtonDown("Rotate") )
         {            
-            m_activeShape.RotateRight();
-            if(!m_board.IsValidPosition(m_activeShape))
-            {
-                PlaySound(m_soundManager.m_errorSound);
-                m_activeShape.RotateLeft();
-            }
-            else
-            {
-                PlaySound(m_soundManager.m_moveSound);
-            }
-               
-
+           ProcessInput(() => m_activeShape.RotateRight(), () => m_activeShape.RotateLeft());
         }
         else if(Input.GetButtonDown("MoveDown"))
         {
@@ -138,6 +107,21 @@ public class GameController : MonoBehaviour
 
             m_timeToDrop = Time.time + m_dropInterval;
         }
+    }
+
+    private void ProcessInput(Action action,Action revertedAction)
+    {
+            m_timeToNextKey = m_keyRepeatRate + Time.time;
+            action();
+            if(!m_board.IsValidPosition(m_activeShape))
+            {
+                PlaySound(m_soundManager.m_errorSound);
+                revertedAction();
+            }
+            else
+            {
+                PlaySound(m_soundManager.m_moveSound);
+            }
     }
 
     private void GameOver()
