@@ -17,10 +17,15 @@ public class GameController : MonoBehaviour
     public GameObject m_gameOverPanel;
     private SoundManager m_soundManager;
     private Camera mainCamera;
+    public IconToggle m_rotIconToggle;
+    private bool m_clockwise = true;
+    public bool m_isPaused = false;
+    public GameObject m_pausePanel;
     // Start is called before the first frame update
     void Start()
     {
         m_gameOverPanel.SetActive(false);
+        m_pausePanel.SetActive(false);
         m_board = GameObject.FindGameObjectWithTag("Board").GetComponent<Board>();
         m_spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<Spawner>();
         m_soundManager = FindObjectOfType<SoundManager>();
@@ -57,6 +62,7 @@ public class GameController : MonoBehaviour
     public void Restart()
     {
         Debug.Log("Restarted Level");
+        Time.timeScale = 1f;
         SceneManager.LoadScene("Gameplay");
     }
 
@@ -72,7 +78,7 @@ public class GameController : MonoBehaviour
         }
         else if(Input.GetButtonDown("Rotate") )
         {            
-           ProcessInput(() => m_activeShape.RotateRight(), () => m_activeShape.RotateLeft());
+           ProcessInput(() => m_activeShape.RotateClockwise(m_clockwise), () => m_activeShape.RotateClockwise(!m_clockwise));
         }
         else if(Input.GetButtonDown("MoveDown"))
         {
@@ -156,6 +162,36 @@ public class GameController : MonoBehaviour
         if(sound != null && m_soundManager.m_fxEnabled)
         {
             AudioSource.PlayClipAtPoint(sound,mainCamera.transform.position,m_soundManager.m_fxVolume);
+        }
+    }
+
+    public void ToggleRotDirection()
+    {
+        m_clockwise = !m_clockwise;
+
+        if(m_rotIconToggle != null)
+        {
+            m_rotIconToggle.ToggleIcon(m_clockwise);
+        }
+    }
+
+    public void TogglePause()
+    {
+        if(m_gameOver)
+        {
+            return;
+        }
+
+        m_isPaused = !m_isPaused;
+
+        if(m_pausePanel != null)
+        {
+            m_pausePanel.SetActive(m_isPaused);
+
+            m_soundManager.m_musicSource.volume = m_isPaused ? (m_soundManager.m_musicVolume * 0.25f) : m_soundManager.m_musicVolume;
+
+            Time.timeScale = m_isPaused ? 0 : 1;
+
         }
     }
     
