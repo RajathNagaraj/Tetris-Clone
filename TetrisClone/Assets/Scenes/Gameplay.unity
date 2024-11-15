@@ -247,6 +247,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_emptySprite: {fileID: 1481026810101091529, guid: 21eb6e5255836494ea07167cd31c43fa, type: 3}
+  particle: {fileID: 7795055970763261841, guid: ad8c704bfda3c214c93bd49f1682e283, type: 3}
   m_height: 30
   m_width: 10
   m_header: 8

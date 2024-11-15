@@ -6,6 +6,8 @@ using UnityEngine;
 public class Board : MonoBehaviour
 {
     public Transform m_emptySprite;
+    public ParticleSystem particle;
+    private ParticleSystem generatedParticle;
     public int m_height = 30;
     public int m_width = 10;
     public int m_header = 8;
@@ -121,7 +123,9 @@ public class Board : MonoBehaviour
         for(int x = 0; x < m_width; ++x)
         {
             if(m_grid[x,y] != null)
+                EmitParticles(m_grid[x,y].position);
                 Destroy(m_grid[x,y].gameObject);
+                
             
             m_grid[x,y] = null;
         }
@@ -130,6 +134,14 @@ public class Board : MonoBehaviour
        
        
     }
+
+    private void EmitParticles(Vector3 position)
+    {
+        generatedParticle = Instantiate(particle, position, Quaternion.identity);
+        generatedParticle.Play();       
+    }
+
+   
 
     private void ShiftOneRowDown(int y)
     {
