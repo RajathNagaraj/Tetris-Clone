@@ -2926,7 +2926,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_musicEnabled: 1
   m_fxEnabled: 1
-  m_musicVolume: 0.471
+  m_musicVolume: 1
   m_fxVolume: 1
   m_rowClearSound: {fileID: 8300000, guid: 5e573cc7e2cd44522a9dbd65bd61eb95, type: 3}
   m_moveSound: {fileID: 8300000, guid: 232745a37421848f0b6ba281e2775fd1, type: 3}
