@@ -20,15 +20,35 @@ public class ScreenFader : MonoBehaviour
     void Start()
     {
         m_graphic = GetComponent<MaskableGraphic>();
+
         m_originalColor = m_graphic.color;
+
+        m_currentAlpha = m_startAlpha;
+
         Color tempColor = new Color(m_originalColor.r, m_originalColor.g, m_originalColor.b, m_currentAlpha);
+
+        m_graphic.color = tempColor;
+
         m_inc = ((m_targetAlpha - m_startAlpha)/m_timeToFade) * Time.deltaTime;
-        StartCoroutine("FadeRoutine");        
+
+        StartCoroutine("FadeRoutine");       
+
     }
 
     IEnumerator FadeRoutine()
     {
-        yield return new WaitForSeconds(m_delay);
+        while(Mathf.Abs(m_targetAlpha - m_currentAlpha) > 0.01f)
+        {
+            yield return new WaitForEndOfFrame();
+            m_currentAlpha += m_inc;
+
+            Color tempColor = new Color(m_originalColor.r, m_originalColor.g, m_originalColor.b, m_currentAlpha);
+            m_graphic.color = tempColor;
+            
+        }
+
+        Debug.Log("SCREEN FADER finished");
+       
     }
 
     // Update is called once per frame
