@@ -66,4 +66,18 @@ public class Shape : MonoBehaviour
     {
         
     }
+    
+    private void OnDestroy() 
+    {
+        
+        var children = GetComponentsInChildren<Transform>();
+        for(int i = 0; i < children.Length; i++)
+        {
+            children[i].parent = null;
+        }
+
+        
+       
+    }
+    
 }

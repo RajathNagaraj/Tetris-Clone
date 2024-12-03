@@ -2455,6 +2455,51 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3960083598289706289, guid: 2b934aa5fb83983438b642dcf20de57f, type: 3}
   m_PrefabInstance: {fileID: 1668321051639910213}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1211786218
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1211786219}
+  - component: {fileID: 1211786220}
+  m_Layer: 0
+  m_Name: ScoreManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1211786219
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211786218}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1914595125}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1211786220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211786218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7ffe0c5db1a9454abc5e55b2276db6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_linesPerLevel: 5
 --- !u!1 &1218365697 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6822093563489566892, guid: 2b934aa5fb83983438b642dcf20de57f, type: 3}
@@ -4048,6 +4093,7 @@ Transform:
   m_Children:
   - {fileID: 1467520156}
   - {fileID: 1011791627}
+  - {fileID: 1211786219}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1956368282 stripped
@@ -4755,9 +4801,9 @@ SceneRoots:
   - {fileID: 130115649}
   - {fileID: 89968470}
   - {fileID: 1450374308}
-  - {fileID: 241997506}
   - {fileID: 1629621198}
   - {fileID: 748228091}
   - {fileID: 129863694}
   - {fileID: 1914595125}
   - {fileID: 167237792}
+  - {fileID: 241997506}

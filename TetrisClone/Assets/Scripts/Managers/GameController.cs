@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour
     private bool m_gameOver = false;
     public GameObject m_gameOverPanel;
     private SoundManager m_soundManager;
+    private ScoreManager m_scoreManager;
     private Camera mainCamera;
     public IconToggle m_rotIconToggle;
     private bool m_clockwise = true;
@@ -29,6 +30,7 @@ public class GameController : MonoBehaviour
         m_board = GameObject.FindGameObjectWithTag("Board").GetComponent<Board>();
         m_spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<Spawner>();
         m_soundManager = FindObjectOfType<SoundManager>();
+        m_scoreManager = FindObjectOfType<ScoreManager>();
         mainCamera = Camera.main;
         if(m_spawner != null)
         {
@@ -40,18 +42,25 @@ public class GameController : MonoBehaviour
         }
 
         m_board.OnRowCompleted += ()=>
-        {
+        {             
             PlaySound(m_soundManager.m_rowClearSound);
         };
+
+        m_board.OnAllRowsCleared += UpdateScore;
         
     }
 
-   
+    private void UpdateScore(int score)
+    {
+        m_scoreManager.ScoreLines(m_board.m_rowsCompleted);
+    }
+
+
 
     // Update is called once per frame
     void Update()
     {
-        if(m_board == null || m_activeShape == null || m_spawner == null || m_soundManager == null || m_gameOver)
+        if(m_board == null || m_activeShape == null || m_spawner == null || m_soundManager == null || m_scoreManager == null || m_gameOver)
         {
             return;
         }
@@ -144,6 +153,9 @@ public class GameController : MonoBehaviour
     {
         m_activeShape.MoveUp();
         m_board.StoreShapeInGrid(m_activeShape);
+        //Check if this line breaks the game
+        Destroy(m_activeShape.gameObject);
+        m_activeShape = null;
         m_activeShape = m_spawner.SpawnShape(); 
 
         m_board.ClearAllRows();

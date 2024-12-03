@@ -47,7 +47,7 @@ public class ScreenFader : MonoBehaviour
             
         }
 
-        Debug.Log("SCREEN FADER finished");
+        
        
     }
 

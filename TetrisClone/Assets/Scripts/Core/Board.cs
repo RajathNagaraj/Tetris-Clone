@@ -14,6 +14,7 @@ public class Board : MonoBehaviour
     Transform[,] m_grid;
     public int m_rowsCompleted = 0;
     public Action OnRowCompleted = delegate{}; 
+    public Action<int> OnAllRowsCleared = delegate{};
 
     private void Awake()
     {
@@ -123,13 +124,14 @@ public class Board : MonoBehaviour
         for(int x = 0; x < m_width; ++x)
         {
             if(m_grid[x,y] != null)
+            {
                 EmitParticles(m_grid[x,y].position);
                 Destroy(m_grid[x,y].gameObject);
+            }
                 
             
             m_grid[x,y] = null;
         }
-
         OnRowCompleted?.Invoke();
        
        
@@ -172,11 +174,12 @@ public class Board : MonoBehaviour
             if(IsComplete(y))
             {
                 ClearRow(y);
-                ++m_rowsCompleted;
+                ++m_rowsCompleted;                
                 ShiftRowsDown(y+1);
                 y--;
             }
         }
+        OnAllRowsCleared?.Invoke(m_rowsCompleted);
     }
 
 
