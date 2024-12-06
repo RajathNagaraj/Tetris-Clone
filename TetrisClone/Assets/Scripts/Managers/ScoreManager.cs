@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,8 @@ public class ScoreManager : MonoBehaviour
     public int m_linesPerLevel = 5;
     private const int m_MINLINES = 1;
     private const int m_MAXLINES = 4;
+
+    public Action<int,int,int> OnUpdateUI = delegate{};
 
     public void ScoreLines(int numberOfLines)
     {
@@ -26,6 +29,8 @@ public class ScoreManager : MonoBehaviour
             case 4: m_score += 1200 * m_level;
                 break;
         }
+
+        OnUpdateUI?.Invoke(m_lines, m_level, m_score);
     }
 
     public void Reset()

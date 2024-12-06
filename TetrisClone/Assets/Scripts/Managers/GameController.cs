@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
     public GameObject m_gameOverPanel;
     private SoundManager m_soundManager;
     private ScoreManager m_scoreManager;
+    private UIManager m_uiManager;
     private Camera mainCamera;
     public IconToggle m_rotIconToggle;
     private bool m_clockwise = true;
@@ -31,6 +32,7 @@ public class GameController : MonoBehaviour
         m_spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<Spawner>();
         m_soundManager = FindObjectOfType<SoundManager>();
         m_scoreManager = FindObjectOfType<ScoreManager>();
+        m_uiManager = FindObjectOfType<UIManager>();
         mainCamera = Camera.main;
         if(m_spawner != null)
         {
@@ -47,6 +49,8 @@ public class GameController : MonoBehaviour
         };
 
         m_board.OnAllRowsCleared += UpdateScore;
+
+        m_scoreManager.OnUpdateUI += m_uiManager.UpdateUI;
         
     }
 
@@ -153,7 +157,6 @@ public class GameController : MonoBehaviour
     {
         m_activeShape.MoveUp();
         m_board.StoreShapeInGrid(m_activeShape);
-        //Check if this line breaks the game
         Destroy(m_activeShape.gameObject);
         m_activeShape = null;
         m_activeShape = m_spawner.SpawnShape(); 
