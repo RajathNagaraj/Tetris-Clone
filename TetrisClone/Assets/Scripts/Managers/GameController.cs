@@ -55,6 +55,9 @@ public class GameController : MonoBehaviour
         {
             Invoke("PlayLevelUpVocalClip",1f);
         };
+
+
+        m_scoreManager.OnLevelUp += m_uiManager.LevelUp;
         
     }
 

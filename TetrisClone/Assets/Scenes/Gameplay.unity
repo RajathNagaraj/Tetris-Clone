@@ -454,7 +454,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &127666951
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4846,6 +4846,7 @@ MonoBehaviour:
   m_linesText: {fileID: 1668321051639910214}
   m_levelText: {fileID: 1587316192}
   m_scoreText: {fileID: 973218032}
+  LevelUpText: {fileID: 127666950}
 --- !u!1001 &1668321051639910213
 PrefabInstance:
   m_ObjectHideFlags: 0
