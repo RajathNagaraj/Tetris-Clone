@@ -51,7 +51,17 @@ public class GameController : MonoBehaviour
         m_board.OnAllRowsCleared += UpdateScore;
 
         m_scoreManager.OnUpdateUI += m_uiManager.UpdateUI;
+        m_scoreManager.OnLevelUp += ()=> 
+        {
+            Invoke("PlayLevelUpVocalClip",1f);
+        };
         
+    }
+
+    //The Level Up Vocal Clip is invoked after 1 second as we do not want many vocal clips playing at the same time
+    private void PlayLevelUpVocalClip()
+    {
+        PlaySound(m_soundManager.m_levelUpVocalClip);
     }
 
     private void UpdateScore(int score)
