@@ -38,13 +38,13 @@ public class UIManager : MonoBehaviour
     public void LevelUp()
     {
         LevelUpText.SetActive(true);
-        StartCoroutine(DisableLevelUpText(2f));
+        StartCoroutine(DisableLevelUpText(3f));
     }
 
     private IEnumerator DisableLevelUpText(float timeToDisable)
     {
         yield return new WaitForSeconds(timeToDisable);
-        LevelUpText.SetActive(false);
+        LevelUpText.SetActive(false);     
     }
 
     private string padZero(int score, int padDigits)
