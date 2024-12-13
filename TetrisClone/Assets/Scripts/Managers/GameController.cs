@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
    private Shape m_activeShape;
    private float m_timeToDrop;
    private float m_dropInterval = 0.25f;
+   private float m_dropIntervalModded;
    private float m_timeToNextKey;
    private float m_keyRepeatRate = 0.15f;
     private bool m_gameOver = false;
@@ -34,6 +35,8 @@ public class GameController : MonoBehaviour
         m_scoreManager = FindObjectOfType<ScoreManager>();
         m_uiManager = FindObjectOfType<UIManager>();
         mainCamera = Camera.main;
+
+        m_dropIntervalModded = m_dropInterval;
         if(m_spawner != null)
         {
             m_spawner.transform.position = Vectorf.Round(m_spawner.transform.position);
@@ -51,13 +54,14 @@ public class GameController : MonoBehaviour
         m_board.OnAllRowsCleared += UpdateScore;
 
         m_scoreManager.OnUpdateUI += m_uiManager.UpdateUI;
-        m_scoreManager.OnLevelUp += ()=> 
+        m_scoreManager.OnLevelUp += (int level)=> 
         {
             Invoke("PlayLevelUpVocalClip",1f);
+            m_dropIntervalModded = Mathf.Clamp(m_dropInterval - ((level - 1) * 0.05f), 0.05f, 1f);
         };
 
 
-        m_scoreManager.OnLevelUp += m_uiManager.LevelUp;
+        m_scoreManager.OnLevelUpNotifyUI += m_uiManager.LevelUp;
         
     }
 
@@ -108,11 +112,11 @@ public class GameController : MonoBehaviour
         }
         else if(Input.GetButtonDown("MoveDown"))
         {
-            m_dropInterval /= 4;               
+            m_dropIntervalModded /= 4;               
         }
         else if(Input.GetButtonUp("MoveDown"))
         {
-            m_dropInterval *= 4;
+            m_dropIntervalModded *= 4;
         }
 
         if(Time.time > m_timeToDrop)
@@ -137,7 +141,7 @@ public class GameController : MonoBehaviour
               
             }
 
-            m_timeToDrop = Time.time + m_dropInterval;
+            m_timeToDrop = Time.time + m_dropIntervalModded;
         }
     }
 
