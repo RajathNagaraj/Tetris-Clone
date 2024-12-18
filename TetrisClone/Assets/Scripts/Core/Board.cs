@@ -62,7 +62,21 @@ public class Board : MonoBehaviour
         foreach(Transform child in shape.transform)
         {
             Vector2 pos = Vectorf.Round(child.position);
-            m_grid[(int) pos.x, (int) pos.y] = child;
+            m_grid[(int) pos.x, (int) pos.y] = child;           
+        }
+        FreeChildrenInCurrentShape(shape);
+    }
+    //We want to dereference the child blocks from the parent so that they dont get deleted when the parent
+    //is destroyed
+    private void FreeChildrenInCurrentShape(Shape shape)
+    {
+        var transforms = shape.transform.GetComponentsInChildren<Transform>();
+        if(transforms != null)
+        {
+            for(int i = 0; i < transforms.Length; i++)
+            {
+                transforms[i].parent = null;
+            }
         }
     }
 
@@ -127,6 +141,7 @@ public class Board : MonoBehaviour
             {
                 EmitParticles(m_grid[x,y].position);
                 Destroy(m_grid[x,y].gameObject);
+                
             }
                 
             

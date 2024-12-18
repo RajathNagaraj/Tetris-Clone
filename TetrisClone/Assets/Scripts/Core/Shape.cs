@@ -66,7 +66,7 @@ public class Shape : MonoBehaviour
     {
         
     }
-    
+    /*
     private void OnDestroy() 
     {
         
@@ -79,5 +79,6 @@ public class Shape : MonoBehaviour
         
        
     }
+    */
     
 }

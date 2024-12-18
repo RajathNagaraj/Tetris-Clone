@@ -9,6 +9,9 @@ public class GameController : MonoBehaviour
    private Board m_board;
    private Spawner m_spawner;
    private Shape m_activeShape;
+   private Shape m_ghostShape = null;   
+   public bool m_ghostHitBottom = false;
+   public Color m_ghostColor = new Color(1f, 1f, 1f, 0.2f);
    private float m_timeToDrop;
    private float m_dropInterval = 0.25f;
    private float m_dropIntervalModded;
@@ -34,6 +37,7 @@ public class GameController : MonoBehaviour
         m_soundManager = FindObjectOfType<SoundManager>();
         m_scoreManager = FindObjectOfType<ScoreManager>();
         m_uiManager = FindObjectOfType<UIManager>();
+       
         mainCamera = Camera.main;
 
         m_dropIntervalModded = m_dropInterval;
@@ -87,6 +91,14 @@ public class GameController : MonoBehaviour
         }
 
         PlayerInput();       
+    }
+
+    void LateUpdate() 
+    {
+        if(m_ghostShape == null)
+        {
+            DrawGhost();
+        }
     }
 
     public void Restart()
@@ -158,6 +170,31 @@ public class GameController : MonoBehaviour
             {
                 PlaySound(m_soundManager.m_moveSound);
             }
+    }
+
+    private void DrawGhost()
+    {
+        if(m_ghostShape == null)
+        {
+            m_ghostShape = Instantiate(m_activeShape, m_activeShape.transform.position, m_activeShape.transform.rotation) as Shape;
+            m_ghostShape.gameObject.name = "GhostShape";
+
+            SpriteRenderer[] allRenderers = m_ghostShape.GetComponentsInChildren<SpriteRenderer>();
+            for(int i = 0; i < allRenderers.Length; ++i)
+            {
+                allRenderers[i].color = m_ghostColor;
+            }
+        }
+
+        while(!m_ghostHitBottom)
+        {
+            m_ghostShape.MoveDown();
+            if(!m_board.IsValidPosition(m_ghostShape))
+            {
+                m_ghostShape.MoveUp();
+                m_ghostHitBottom = true;
+            }
+        }
     }
 
     private void GameOver()

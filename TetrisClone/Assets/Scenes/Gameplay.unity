@@ -2220,6 +2220,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fffc4412b12690343bfd54dc6e7d82cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ghostHitBottom: 0
+  m_ghostColor: {r: 1, g: 1, b: 1, a: 0.2}
   m_gameOverPanel: {fileID: 360678414}
   m_rotIconToggle: {fileID: 960054130}
   m_isPaused: 0
