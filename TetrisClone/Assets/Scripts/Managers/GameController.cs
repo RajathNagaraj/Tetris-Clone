@@ -95,10 +95,9 @@ public class GameController : MonoBehaviour
 
     void LateUpdate() 
     {
-        if(m_ghostShape == null)
-        {
-            DrawGhost();
-        }
+        
+        DrawGhost();
+        
     }
 
     public void Restart()
@@ -137,15 +136,19 @@ public class GameController : MonoBehaviour
             {
                 m_activeShape.MoveDown();
                 if(!m_board.IsValidPosition(m_activeShape))
-                {
+                {                 
                    if(m_board.IsOverLimit(m_activeShape))
                    {
                       GameOver();
                    }
                    else
                    {
-                      LandShape(); 
+                     LandShape();
                    }
+                   
+                   
+                      
+                   
                    
                 }
                 
@@ -185,6 +188,13 @@ public class GameController : MonoBehaviour
                 allRenderers[i].color = m_ghostColor;
             }
         }
+        else
+        {
+            m_ghostShape.transform.position = m_activeShape.transform.position;
+            m_ghostShape.transform.rotation = m_activeShape.transform.rotation;
+        }
+
+        m_ghostHitBottom = false;
 
         while(!m_ghostHitBottom)
         {
@@ -212,7 +222,9 @@ public class GameController : MonoBehaviour
         m_activeShape.MoveUp();
         m_board.StoreShapeInGrid(m_activeShape);
         Destroy(m_activeShape.gameObject);
+        Destroy(m_ghostShape.gameObject);
         m_activeShape = null;
+        m_ghostShape = null;
         m_activeShape = m_spawner.SpawnShape(); 
 
         m_board.ClearAllRows();
