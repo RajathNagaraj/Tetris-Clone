@@ -38,7 +38,7 @@ public class Board : MonoBehaviour
     {
         foreach(Transform child in shape.transform)
         {
-            if(child.position.y > m_height - m_header)
+            if(child.position.y >= m_height - m_header)
             {
                 return true;
             }

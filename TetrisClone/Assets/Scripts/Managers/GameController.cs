@@ -136,20 +136,16 @@ public class GameController : MonoBehaviour
             {
                 m_activeShape.MoveDown();
                 if(!m_board.IsValidPosition(m_activeShape))
-                {                 
+                {   
+                                  
                    if(m_board.IsOverLimit(m_activeShape))
                    {
-                      GameOver();
+                     GameOver();
                    }
                    else
                    {
                      LandShape();
-                   }
-                   
-                   
-                      
-                   
-                   
+                   }                  
                 }
                 
 
@@ -220,7 +216,16 @@ public class GameController : MonoBehaviour
     private void LandShape()
     {
         m_activeShape.MoveUp();
-        m_board.StoreShapeInGrid(m_activeShape);
+        
+        //The if check below was for a particular case when the shape would land and part of it 
+        //would still be above the board and the game would continue.
+        if(m_board.IsOverLimit(m_activeShape))
+        {
+            GameOver();
+        }
+
+        m_board.StoreShapeInGrid(m_activeShape);  
+
         Destroy(m_activeShape.gameObject);
         Destroy(m_ghostShape.gameObject);
         m_activeShape = null;
