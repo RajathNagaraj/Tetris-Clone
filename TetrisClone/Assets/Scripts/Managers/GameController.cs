@@ -75,9 +75,9 @@ public class GameController : MonoBehaviour
         PlaySound(m_soundManager.m_levelUpVocalClip);
     }
 
-    private void UpdateScore(int score)
+    private void UpdateScore(int rowsCompleted)
     {
-        m_scoreManager.ScoreLines(m_board.m_rowsCompleted);
+        m_scoreManager.ScoreLines(rowsCompleted);
     }
 
 
@@ -125,7 +125,7 @@ public class GameController : MonoBehaviour
         {
             m_dropIntervalModded /= 4;               
         }
-        else if(Input.GetButtonUp("MoveDown"))
+        if(Input.GetButtonUp("MoveDown"))
         {
             m_dropIntervalModded *= 4;
         }
