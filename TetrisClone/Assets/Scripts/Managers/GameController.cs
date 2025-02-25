@@ -30,41 +30,66 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Disabling the GameOver and Pause panels, as we dont want them appearing 
+        //when the game starts
         m_gameOverPanel.SetActive(false);
         m_pausePanel.SetActive(false);
+
+        //Finding and caching references to all important components of the Game
         m_board = GameObject.FindGameObjectWithTag("Board").GetComponent<Board>();
         m_spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<Spawner>();
         m_soundManager = FindObjectOfType<SoundManager>();
         m_scoreManager = FindObjectOfType<ScoreManager>();
-        m_uiManager = FindObjectOfType<UIManager>();
-       
+        m_uiManager = FindObjectOfType<UIManager>();       
         mainCamera = Camera.main;
 
+        //A constant drop interval makes the game boring.
+        //So, we modify the drop interval when the Player completes a Line.
         m_dropIntervalModded = m_dropInterval;
+
+        //If the Spawner exists
         if(m_spawner != null)
         {
+            //We round off the position of the Spawner if it is in Decimals
+            //And store it back in the Spawner position variable
             m_spawner.transform.position = Vectorf.Round(m_spawner.transform.position);
+            //If there isnt an active Shape present in the scene
             if(m_activeShape == null)
             {
+                //Spawn one and store it in a field variable already present
                  m_activeShape = m_spawner.SpawnShape();
             }
         }
 
+        //OnRowCompleted is an action present in the Board class that subscribes to
+        //a lambda in this class, which in turn plays a sound upon clearing a row.
         m_board.OnRowCompleted += ()=>
         {             
             PlaySound(m_soundManager.m_rowClearSound);
         };
 
+        //This action gets triggered when all rows in the board are checked for clearing.
+        //It passes the number of rows actually cleared to a method called UpdateScore.
+        //UpdateScore is used to update ScoreManager.
         m_board.OnAllRowsCleared += UpdateScore;
 
+        //OnUpdateUI is an action that passes the lines,level and score (in that order) to
+        //the UIManager 
         m_scoreManager.OnUpdateUI += m_uiManager.UpdateUI;
+
+        //ScoreManager notifies us when the Player levels up. 
+        //Everytime Player levels up the drop interval shortens making
+        //shapes fall faster.
         m_scoreManager.OnLevelUp += (int level)=> 
         {
             Invoke("PlayLevelUpVocalClip",1f);
+
+            //We perform a calculation and store the value in the modded drop interval variable.
+            //It is clamped between 0.05 and 1.
             m_dropIntervalModded = Mathf.Clamp(m_dropInterval - ((level - 1) * 0.05f), 0.05f, 1f);
         };
 
-
+        //On levelling up, the Score Manager notifies the UIManager.
         m_scoreManager.OnLevelUpNotifyUI += m_uiManager.LevelUp;
         
     }
@@ -75,6 +100,9 @@ public class GameController : MonoBehaviour
         PlaySound(m_soundManager.m_levelUpVocalClip);
     }
 
+
+    //The Board class notifies us when all rows are cleared. Thats when the score 
+    //has to be updated in case any rows are completed.
     private void UpdateScore(int rowsCompleted)
     {
         m_scoreManager.ScoreLines(rowsCompleted);
@@ -85,21 +113,24 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Precautionary check to ensure that all critical components and variables are present.
+        //Return if any are missing. Dont do anything.
         if(m_board == null || m_activeShape == null || m_spawner == null || m_soundManager == null || m_scoreManager == null || m_gameOver)
         {
             return;
         }
-
+        //Check for Player Input every Update.
         PlayerInput();       
     }
 
     void LateUpdate() 
     {
-        
+        //Draw the Ghost shape ONLY AFTER the real shape has been drawn.
         DrawGhost();
         
     }
-
+    //Restart Logic
+    //Freeze time and Reload Scene.
     public void Restart()
     {
         Debug.Log("Restarted Level");
@@ -109,22 +140,31 @@ public class GameController : MonoBehaviour
 
      void PlayerInput()
     {
+        //If the button corresponding to Input Axis MoveRight has been detected within the alloted time frame?
         if((Input.GetButton("MoveRight") && Time.time > m_timeToNextKey) || Input.GetButtonDown("MoveRight"))
         {
             ProcessInput(() => m_activeShape.MoveRight(), () => m_activeShape.MoveLeft());            
         }
+
+        //If the button corresponding to Input Axis MoveLeft has been detected within the alloted time frame?
         else if((Input.GetButton("MoveLeft") && Time.time > m_timeToNextKey) || Input.GetButtonDown("MoveLeft"))
         {
            ProcessInput(() => m_activeShape.MoveLeft(), () => m_activeShape.MoveRight());
         }
+
+        //If the button corresponding to Rotate has been pressed?
         else if(Input.GetButtonDown("Rotate") )
         {            
            ProcessInput(() => m_activeShape.RotateClockwise(m_clockwise), () => m_activeShape.RotateClockwise(!m_clockwise));
         }
+
+        //Speed up the shape on pressing MoveDown
         else if(Input.GetButtonDown("MoveDown"))
         {
             m_dropIntervalModded /= 4;               
         }
+
+        //Restore the original speed on releasing MoveDown button.
         if(Input.GetButtonUp("MoveDown"))
         {
             m_dropIntervalModded *= 4;
