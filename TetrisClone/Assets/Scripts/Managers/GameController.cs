@@ -6,17 +6,17 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-   private Board m_board;
-   private Spawner m_spawner;
-   private Shape m_activeShape;
-   private Shape m_ghostShape = null;   
-   public bool m_ghostHitBottom = false;
-   public Color m_ghostColor = new Color(1f, 1f, 1f, 0.2f);
-   private float m_timeToDrop;
-   private float m_dropInterval = 0.25f;
-   private float m_dropIntervalModded;
-   private float m_timeToNextKey;
-   private float m_keyRepeatRate = 0.15f;
+    private Board m_board;
+    private Spawner m_spawner;
+    private Shape m_activeShape;
+    private Shape m_ghostShape = null;
+    public bool m_ghostHitBottom = false;
+    public Color m_ghostColor = new Color(1f, 1f, 1f, 0.2f);
+    private float m_timeToDrop;
+    private float m_dropInterval = 0.25f;
+    private float m_dropIntervalModded;
+    private float m_timeToNextKey;
+    private float m_keyRepeatRate = 0.15f;
     private bool m_gameOver = false;
     public GameObject m_gameOverPanel;
     private SoundManager m_soundManager;
@@ -38,9 +38,9 @@ public class GameController : MonoBehaviour
         //Finding and caching references to all important components of the Game
         m_board = GameObject.FindGameObjectWithTag("Board").GetComponent<Board>();
         m_spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<Spawner>();
-        m_soundManager = FindObjectOfType<SoundManager>();
-        m_scoreManager = FindObjectOfType<ScoreManager>();
-        m_uiManager = FindObjectOfType<UIManager>();       
+        m_soundManager = FindFirstObjectByType<SoundManager>();
+        m_scoreManager = FindFirstObjectByType<ScoreManager>();
+        m_uiManager = FindFirstObjectByType<UIManager>();
         mainCamera = Camera.main;
 
         //A constant drop interval makes the game boring.
@@ -48,23 +48,23 @@ public class GameController : MonoBehaviour
         m_dropIntervalModded = m_dropInterval;
 
         //If the Spawner exists
-        if(m_spawner != null)
+        if (m_spawner != null)
         {
             //We round off the position of the Spawner if it is in Decimals
             //And store it back in the Spawner position variable
             m_spawner.transform.position = Vectorf.Round(m_spawner.transform.position);
             //If there isnt an active Shape present in the scene
-            if(m_activeShape == null)
+            if (m_activeShape == null)
             {
                 //Spawn one and store it in a field variable already present
-                 m_activeShape = m_spawner.SpawnShape();
+                m_activeShape = m_spawner.SpawnShape();
             }
         }
 
         //OnRowCompleted is an action present in the Board class that subscribes to
         //a lambda in this class, which in turn plays a sound upon clearing a row.
-        m_board.OnRowCompleted += ()=>
-        {             
+        m_board.OnRowCompleted += () =>
+        {
             PlaySound(m_soundManager.m_rowClearSound);
         };
 
@@ -80,9 +80,9 @@ public class GameController : MonoBehaviour
         //ScoreManager notifies us when the Player levels up. 
         //Everytime Player levels up the drop interval shortens making
         //shapes fall faster.
-        m_scoreManager.OnLevelUp += (int level)=> 
+        m_scoreManager.OnLevelUp += (int level) =>
         {
-            Invoke("PlayLevelUpVocalClip",1f);
+            Invoke("PlayLevelUpVocalClip", 1f);
 
             //We perform a calculation and store the value in the modded drop interval variable.
             //It is clamped between 0.05 and 1.
@@ -91,7 +91,7 @@ public class GameController : MonoBehaviour
 
         //On levelling up, the Score Manager notifies the UIManager.
         m_scoreManager.OnLevelUpNotifyUI += m_uiManager.LevelUp;
-        
+
     }
 
     //The Level Up Vocal Clip is invoked after 1 second as we do not want many vocal clips playing at the same time
@@ -115,19 +115,19 @@ public class GameController : MonoBehaviour
     {
         //Precautionary check to ensure that all critical components and variables are present.
         //Return if any are missing. Dont do anything.
-        if(m_board == null || m_activeShape == null || m_spawner == null || m_soundManager == null || m_scoreManager == null || m_gameOver)
+        if (m_board == null || m_activeShape == null || m_spawner == null || m_soundManager == null || m_scoreManager == null || m_gameOver)
         {
             return;
         }
         //Check for Player Input every Update.
-        PlayerInput();       
+        PlayerInput();
     }
 
-    void LateUpdate() 
+    void LateUpdate()
     {
         //Draw the Ghost shape ONLY AFTER the real shape has been drawn.
         DrawGhost();
-        
+
     }
     //Restart Logic
     //Freeze time and Reload Scene.
@@ -138,88 +138,88 @@ public class GameController : MonoBehaviour
         SceneManager.LoadScene("Gameplay");
     }
 
-     void PlayerInput()
+    void PlayerInput()
     {
         //If the button corresponding to Input Axis MoveRight has been detected within the alloted time frame?
-        if((Input.GetButton("MoveRight") && Time.time > m_timeToNextKey) || Input.GetButtonDown("MoveRight"))
+        if ((Input.GetButton("MoveRight") && Time.time > m_timeToNextKey) || Input.GetButtonDown("MoveRight"))
         {
-            ProcessInput(() => m_activeShape.MoveRight(), () => m_activeShape.MoveLeft());            
+            ProcessInput(() => m_activeShape.MoveRight(), () => m_activeShape.MoveLeft());
         }
 
         //If the button corresponding to Input Axis MoveLeft has been detected within the alloted time frame?
-        else if((Input.GetButton("MoveLeft") && Time.time > m_timeToNextKey) || Input.GetButtonDown("MoveLeft"))
+        else if ((Input.GetButton("MoveLeft") && Time.time > m_timeToNextKey) || Input.GetButtonDown("MoveLeft"))
         {
-           ProcessInput(() => m_activeShape.MoveLeft(), () => m_activeShape.MoveRight());
+            ProcessInput(() => m_activeShape.MoveLeft(), () => m_activeShape.MoveRight());
         }
 
         //If the button corresponding to Rotate has been pressed?
-        else if(Input.GetButtonDown("Rotate") )
-        {            
-           ProcessInput(() => m_activeShape.RotateClockwise(m_clockwise), () => m_activeShape.RotateClockwise(!m_clockwise));
+        else if (Input.GetButtonDown("Rotate"))
+        {
+            ProcessInput(() => m_activeShape.RotateClockwise(m_clockwise), () => m_activeShape.RotateClockwise(!m_clockwise));
         }
 
         //Speed up the shape on pressing MoveDown
-        else if(Input.GetButtonDown("MoveDown"))
+        else if (Input.GetButtonDown("MoveDown"))
         {
-            m_dropIntervalModded /= 4;               
+            m_dropIntervalModded /= 4;
         }
 
         //Restore the original speed on releasing MoveDown button.
-        if(Input.GetButtonUp("MoveDown"))
+        if (Input.GetButtonUp("MoveDown"))
         {
             m_dropIntervalModded *= 4;
         }
 
-        if(Time.time > m_timeToDrop)
+        if (Time.time > m_timeToDrop)
         {
-            if(m_activeShape != null)
+            if (m_activeShape != null)
             {
                 m_activeShape.MoveDown();
-                if(!m_board.IsValidPosition(m_activeShape))
-                {   
-                                  
-                   if(m_board.IsOverLimit(m_activeShape))
-                   {
-                     GameOver();
-                   }
-                   else
-                   {
-                     LandShape();
-                   }                  
-                }
-                
+                if (!m_board.IsValidPosition(m_activeShape))
+                {
 
-              
+                    if (m_board.IsOverLimit(m_activeShape))
+                    {
+                        GameOver();
+                    }
+                    else
+                    {
+                        LandShape();
+                    }
+                }
+
+
+
             }
 
             m_timeToDrop = Time.time + m_dropIntervalModded;
         }
     }
 
-    private void ProcessInput(Action action,Action revertedAction)
+    private void ProcessInput(Action action, Action revertedAction)
     {
-            m_timeToNextKey = m_keyRepeatRate + Time.time;
-            action();
-            if(!m_board.IsValidPosition(m_activeShape))
-            {
-                PlaySound(m_soundManager.m_errorSound);
-                revertedAction();
-            }
-            else
-            {
-                PlaySound(m_soundManager.m_moveSound);
-            }
+        m_timeToNextKey = m_keyRepeatRate + Time.time;
+        action();
+        if (!m_board.IsValidPosition(m_activeShape))
+        {
+            PlaySound(m_soundManager.m_errorSound);
+            revertedAction();
+        }
+        else
+        {
+            PlaySound(m_soundManager.m_moveSound);
+        }
     }
 
     private void DrawGhost()
     {
-        if(m_ghostShape == null)
+        if (m_ghostShape == null)
         {
             m_ghostShape = Instantiate(m_activeShape, m_activeShape.transform.position, m_activeShape.transform.rotation) as Shape;
             m_ghostShape.gameObject.name = "GhostShape";
 
             SpriteRenderer[] allRenderers = m_ghostShape.GetComponentsInChildren<SpriteRenderer>();
-            for(int i = 0; i < allRenderers.Length; ++i)
+            for (int i = 0; i < allRenderers.Length; ++i)
             {
                 allRenderers[i].color = m_ghostColor;
             }
@@ -232,10 +232,10 @@ public class GameController : MonoBehaviour
 
         m_ghostHitBottom = false;
 
-        while(!m_ghostHitBottom)
+        while (!m_ghostHitBottom)
         {
             m_ghostShape.MoveDown();
-            if(!m_board.IsValidPosition(m_ghostShape))
+            if (!m_board.IsValidPosition(m_ghostShape))
             {
                 m_ghostShape.MoveUp();
                 m_ghostHitBottom = true;
@@ -245,36 +245,36 @@ public class GameController : MonoBehaviour
 
     private void GameOver()
     {
-         m_activeShape.MoveUp();
-         m_gameOver = true;
-         m_gameOverPanel.SetActive(true);
-         PlaySound(m_soundManager.m_gameOverSound);
-         PlaySound(m_soundManager.m_gameOverVocalClip);
-         Debug.Log("Game Over");
+        m_activeShape.MoveUp();
+        m_gameOver = true;
+        m_gameOverPanel.SetActive(true);
+        PlaySound(m_soundManager.m_gameOverSound);
+        PlaySound(m_soundManager.m_gameOverVocalClip);
+        Debug.Log("Game Over");
     }
 
     private void LandShape()
     {
         m_activeShape.MoveUp();
-        
+
         //The if check below was for a particular case when the shape would land and part of it 
         //would still be above the board and the game would continue.
-        if(m_board.IsOverLimit(m_activeShape))
+        if (m_board.IsOverLimit(m_activeShape))
         {
             GameOver();
         }
 
-        m_board.StoreShapeInGrid(m_activeShape);  
+        m_board.StoreShapeInGrid(m_activeShape);
 
         Destroy(m_activeShape.gameObject);
         Destroy(m_ghostShape.gameObject);
         m_activeShape = null;
         m_ghostShape = null;
-        m_activeShape = m_spawner.SpawnShape(); 
+        m_activeShape = m_spawner.SpawnShape();
 
         m_board.ClearAllRows();
 
-        if(m_board.m_rowsCompleted > 1)
+        if (m_board.m_rowsCompleted > 1)
         {
             AudioClip randomVocalClip = m_soundManager.GetRandomClip(m_soundManager.m_vocalClips);
             PlaySound(randomVocalClip);
@@ -285,9 +285,9 @@ public class GameController : MonoBehaviour
 
     void PlaySound(AudioClip sound)
     {
-        if(sound != null && m_soundManager.m_fxEnabled)
+        if (sound != null && m_soundManager.m_fxEnabled)
         {
-            AudioSource.PlayClipAtPoint(sound,mainCamera.transform.position,m_soundManager.m_fxVolume);
+            AudioSource.PlayClipAtPoint(sound, mainCamera.transform.position, m_soundManager.m_fxVolume);
         }
     }
 
@@ -295,7 +295,7 @@ public class GameController : MonoBehaviour
     {
         m_clockwise = !m_clockwise;
 
-        if(m_rotIconToggle != null)
+        if (m_rotIconToggle != null)
         {
             m_rotIconToggle.ToggleIcon(m_clockwise);
         }
@@ -303,14 +303,14 @@ public class GameController : MonoBehaviour
 
     public void TogglePause()
     {
-        if(m_gameOver)
+        if (m_gameOver)
         {
             return;
         }
 
         m_isPaused = !m_isPaused;
 
-        if(m_pausePanel != null)
+        if (m_pausePanel != null)
         {
             m_pausePanel.SetActive(m_isPaused);
 
@@ -320,5 +320,5 @@ public class GameController : MonoBehaviour
 
         }
     }
-    
+
 }
