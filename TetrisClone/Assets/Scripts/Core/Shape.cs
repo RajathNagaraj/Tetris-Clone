@@ -12,7 +12,7 @@ public class Shape : MonoBehaviour
         transform.position += moveDirection;
     }
 
-   public void MoveUp()
+    public void MoveUp()
     {
         Move(Vector3.up);
     }
@@ -22,7 +22,7 @@ public class Shape : MonoBehaviour
         Move(Vector3.down);
     }
 
-   public void MoveLeft()
+    public void MoveLeft()
     {
         Move(Vector3.left);
     }
@@ -32,21 +32,21 @@ public class Shape : MonoBehaviour
         Move(Vector3.right);
     }
 
-   public void RotateLeft()
+    public void RotateLeft()
     {
-        if(m_canRotate)
-             transform.Rotate(0, 0, 90);
+        if (m_canRotate)
+            transform.Rotate(0, 0, 90);
     }
 
     public void RotateRight()
     {
-        if(m_canRotate)
-             transform.Rotate(0, 0, -90);
+        if (m_canRotate)
+            transform.Rotate(0, 0, -90);
     }
 
     public void RotateClockwise(bool clockwise)
     {
-        if(clockwise)
+        if (clockwise)
         {
             RotateRight();
         }
@@ -58,13 +58,13 @@ public class Shape : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     /*
     private void OnDestroy() 
@@ -80,5 +80,5 @@ public class Shape : MonoBehaviour
        
     }
     */
-    
+
 }
