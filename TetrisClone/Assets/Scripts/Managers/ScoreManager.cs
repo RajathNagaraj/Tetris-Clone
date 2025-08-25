@@ -12,30 +12,34 @@ public class ScoreManager : MonoBehaviour
     private const int m_MINLINES = 1;
     private const int m_MAXLINES = 4;
 
-    public Action<int> OnLevelUp = delegate{};
+    public Action<int> OnLevelUp = delegate { };
 
-    public Action OnLevelUpNotifyUI = delegate{};
+    public Action OnLevelUpNotifyUI = delegate { };
 
-    public Action<int,int,int> OnUpdateUI = delegate{};
+    public Action<int, int, int> OnUpdateUI = delegate { };
 
     public void ScoreLines(int numberOfLines)
     {
-        Mathf.Clamp(numberOfLines,m_MINLINES, m_MAXLINES);
+        numberOfLines = Mathf.Clamp(numberOfLines, m_MINLINES, m_MAXLINES);
 
-        switch(numberOfLines)
+        switch (numberOfLines)
         {
-            case 1: m_score += 40 * m_level;
+            case 1:
+                m_score += 40 * m_level;
                 break;
-            case 2: m_score += 100 * m_level;
+            case 2:
+                m_score += 100 * m_level;
                 break;
-            case 3: m_score += 300 * m_level;
+            case 3:
+                m_score += 300 * m_level;
                 break;
-            case 4: m_score += 1200 * m_level;
+            case 4:
+                m_score += 1200 * m_level;
                 break;
         }
         m_lines -= numberOfLines;
 
-        if(m_lines <= 0)
+        if (m_lines <= 0)
             LevelUp();
 
         OnUpdateUI?.Invoke(m_lines, m_level, m_score);
@@ -66,6 +70,6 @@ public class ScoreManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
