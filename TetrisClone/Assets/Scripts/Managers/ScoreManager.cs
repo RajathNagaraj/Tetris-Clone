@@ -9,8 +9,8 @@ public class ScoreManager : MonoBehaviour
     private int m_score = 0;
     private int m_level = 1;
     public int m_linesPerLevel = 5;
-    private const int m_MINLINES = 1;
-    private const int m_MAXLINES = 4;
+    //private const int m_MINLINES = 1;
+    //private const int m_MAXLINES = 4;
 
     public Action<int> OnLevelUp = delegate { };
 
@@ -20,7 +20,7 @@ public class ScoreManager : MonoBehaviour
 
     public void ScoreLines(int numberOfLines)
     {
-        numberOfLines = Mathf.Clamp(numberOfLines, m_MINLINES, m_MAXLINES);
+        //numberOfLines = Mathf.Clamp(numberOfLines, m_MINLINES, m_MAXLINES);
 
         switch (numberOfLines)
         {
