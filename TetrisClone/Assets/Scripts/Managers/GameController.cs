@@ -57,7 +57,7 @@ public class GameController : MonoBehaviour
             if (m_activeShape == null)
             {
                 //Spawn one and store it in a field variable already present
-                m_activeShape = m_spawner.SpawnShape();
+                m_activeShape = m_spawner.GetQueuedShape();
             }
         }
 
@@ -270,7 +270,7 @@ public class GameController : MonoBehaviour
         Destroy(m_ghostShape.gameObject);
         m_activeShape = null;
         m_ghostShape = null;
-        m_activeShape = m_spawner.SpawnShape();
+        m_activeShape = m_spawner.GetQueuedShape();
 
         m_board.ClearAllRows();
 
