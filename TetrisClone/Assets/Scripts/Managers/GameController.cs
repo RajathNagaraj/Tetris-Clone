@@ -22,6 +22,7 @@ public class GameController : MonoBehaviour
     private SoundManager m_soundManager;
     private ScoreManager m_scoreManager;
     private UIManager m_uiManager;
+    private Holder m_holder;
     private Camera mainCamera;
     public IconToggle m_rotIconToggle;
     private bool m_clockwise = true;
@@ -41,6 +42,8 @@ public class GameController : MonoBehaviour
         m_soundManager = FindFirstObjectByType<SoundManager>();
         m_scoreManager = FindFirstObjectByType<ScoreManager>();
         m_uiManager = FindFirstObjectByType<UIManager>();
+        m_holder = FindFirstObjectByType<Holder>();
+
         mainCamera = Camera.main;
 
         //A constant drop interval makes the game boring.
@@ -256,6 +259,7 @@ public class GameController : MonoBehaviour
     private void LandShape()
     {
         m_activeShape.MoveUp();
+        m_holder.CanHold = true;
 
         //The if check below was for a particular case when the shape would land and part of it 
         //would still be above the board and the game would continue.
@@ -264,12 +268,12 @@ public class GameController : MonoBehaviour
             GameOver();
         }
 
+
         m_board.StoreShapeInGrid(m_activeShape);
 
-        Destroy(m_activeShape.gameObject);
-        Destroy(m_ghostShape.gameObject);
-        m_activeShape = null;
-        m_ghostShape = null;
+        DestroyActiveShape();
+
+
         m_activeShape = m_spawner.GetQueuedShape();
 
         m_board.ClearAllRows();
@@ -281,6 +285,18 @@ public class GameController : MonoBehaviour
         }
 
         PlaySound(m_soundManager.m_dropSound);
+    }
+
+    private void DestroyActiveShape()
+    {
+        Destroy(m_activeShape.gameObject);
+        DestroyGhost();
+        m_activeShape = null;
+    }
+    private void DestroyGhost()
+    {
+        Destroy(m_ghostShape.gameObject);
+        m_ghostShape = null;
     }
 
     void PlaySound(AudioClip sound)
@@ -319,6 +335,30 @@ public class GameController : MonoBehaviour
             Time.timeScale = m_isPaused ? 0 : 1;
 
         }
+    }
+
+    public void ProcessHoldButton()
+    {
+
+        if (m_holder.m_heldShape == null && m_holder.CanHold)
+        {
+            m_holder.Catch(m_activeShape);
+            DestroyActiveShape();
+            m_activeShape = m_spawner.GetQueuedShape();
+        }
+        else if (m_holder.m_heldShape != null)
+        {
+            DestroyActiveShape();
+            m_activeShape = m_holder.Release();
+            m_holder.CanHold = false;
+            m_activeShape.transform.position = m_spawner.transform.position;
+            DrawGhost();
+        }
+        else
+        {
+            return;
+        }
+
     }
 
 }

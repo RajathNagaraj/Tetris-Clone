@@ -23,7 +23,7 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    public Shape SpawnShape()
+    private Shape SpawnShape()
     {
         Shape shape = null;
         shape = Instantiate(GetRandomShape(), transform.position, Quaternion.identity);
@@ -47,7 +47,7 @@ public class Spawner : MonoBehaviour
             {
                 m_shapeQueue[i] = SpawnShape();
                 m_shapeQueue[i].transform.localScale = new Vector3(m_queueScale, m_queueScale, m_queueScale);
-                m_shapeQueue[i].transform.position = m_queuedXForms[i].position;
+                m_shapeQueue[i].transform.position = m_queuedXForms[i].position + m_shapeQueue[i].m_queueOffset;
             }
 
         }
@@ -63,7 +63,7 @@ public class Spawner : MonoBehaviour
         for (int i = 1; i < m_shapeQueue.Length; i++)
         {
             m_shapeQueue[i - 1] = m_shapeQueue[i];
-            m_shapeQueue[i - 1].transform.position = m_queuedXForms[i - 1].position;
+            m_shapeQueue[i - 1].transform.position = m_queuedXForms[i - 1].position + m_shapeQueue[i - 1].m_queueOffset;
         }
         queuedShape.transform.position = transform.position;
         m_shapeQueue[m_shapeQueue.Length - 1] = null;
