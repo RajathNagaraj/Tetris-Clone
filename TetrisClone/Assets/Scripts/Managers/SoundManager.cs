@@ -6,13 +6,14 @@ public class SoundManager : MonoBehaviour
 {
     public bool m_musicEnabled = true;
     public bool m_fxEnabled = true;
-    
-    [Range(0f,1f)]
+
+    [Range(0f, 1f)]
     public float m_musicVolume;
-    [Range(0f,1f)]
+    [Range(0f, 1f)]
     public float m_fxVolume;
 
     public AudioClip m_rowClearSound;
+    public AudioClip m_holdSound;
     public AudioClip m_moveSound;
     public AudioClip m_errorSound;
     public AudioClip m_dropSound;
@@ -35,7 +36,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlayBackgroundMusic(AudioClip musicClip)
     {
-        if(!m_musicEnabled || musicClip == null || m_musicSource == null)
+        if (!m_musicEnabled || musicClip == null || m_musicSource == null)
         {
             return;
         }
@@ -61,14 +62,14 @@ public class SoundManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void ToggleMusic()
     {
         m_musicEnabled = !m_musicEnabled;
 
-        if(m_musicIconToggle != null)
+        if (m_musicIconToggle != null)
         {
             m_musicIconToggle.ToggleIcon(m_musicEnabled);
         }
@@ -78,9 +79,9 @@ public class SoundManager : MonoBehaviour
 
     void UpdateMusic()
     {
-        if(m_musicSource.isPlaying != m_musicEnabled)
+        if (m_musicSource.isPlaying != m_musicEnabled)
         {
-            if(m_musicEnabled)
+            if (m_musicEnabled)
             {
                 m_randomMusicClip = GetRandomClip(m_musicClips);
                 PlayBackgroundMusic(m_randomMusicClip);
@@ -96,7 +97,7 @@ public class SoundManager : MonoBehaviour
     {
         m_fxEnabled = !m_fxEnabled;
 
-        if(m_fxIconToggle != null)
+        if (m_fxIconToggle != null)
         {
             m_fxIconToggle.ToggleIcon(m_fxEnabled);
         }

@@ -342,12 +342,14 @@ public class GameController : MonoBehaviour
 
         if (m_holder.m_heldShape == null && m_holder.CanHold)
         {
+            PlaySound(m_soundManager.m_holdSound);
             m_holder.Catch(m_activeShape);
             DestroyActiveShape();
             m_activeShape = m_spawner.GetQueuedShape();
         }
         else if (m_holder.m_heldShape != null)
         {
+            PlaySound(m_soundManager.m_holdSound);
             DestroyActiveShape();
             m_activeShape = m_holder.Release();
             m_holder.CanHold = false;
@@ -356,6 +358,7 @@ public class GameController : MonoBehaviour
         }
         else
         {
+            PlaySound(m_soundManager.m_errorSound);
             return;
         }
 
