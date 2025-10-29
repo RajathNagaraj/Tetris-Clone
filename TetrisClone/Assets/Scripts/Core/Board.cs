@@ -6,8 +6,10 @@ using UnityEngine;
 public class Board : MonoBehaviour
 {
     public Transform m_emptySprite;
-    public ParticleSystem particle;
-    private ParticleSystem generatedParticle;
+    public Transform rowGlow;
+
+    private ParticlePlayer rowGlowPlayer;
+
     public int m_height = 30;
     public int m_width = 10;
     public int m_header = 8;
@@ -26,6 +28,7 @@ public class Board : MonoBehaviour
     void Start()
     {
         DrawEmptyCells();
+        //rowGlowPlayer = rowGlow.GetComponent<ParticlePlayer>();
     }
 
     // Update is called once per frame
@@ -124,13 +127,12 @@ public class Board : MonoBehaviour
 
     private void ClearRow(int y)
     {
+        Glow(y);
         for (int x = 0; x < m_width; ++x)
         {
             if (m_grid[x, y] != null)
             {
-                EmitParticles(m_grid[x, y].position);
                 Destroy(m_grid[x, y].gameObject);
-
             }
 
 
@@ -141,10 +143,13 @@ public class Board : MonoBehaviour
 
     }
 
-    private void EmitParticles(Vector3 position)
+    private void Glow(int y)
     {
-        generatedParticle = Instantiate(particle, position, Quaternion.identity);
-        generatedParticle.Play();
+        Vector3 rowPos = new Vector3(0, y, -2);
+        var glowEffect = Instantiate(rowGlow, rowPos, Quaternion.identity);
+        rowGlowPlayer = glowEffect.GetComponent<ParticlePlayer>();
+        rowGlowPlayer.Play();
+
     }
 
 
