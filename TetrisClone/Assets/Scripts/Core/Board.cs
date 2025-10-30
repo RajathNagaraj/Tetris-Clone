@@ -145,7 +145,7 @@ public class Board : MonoBehaviour
 
     private void Glow(int y)
     {
-        Vector3 rowPos = new Vector3(0, y, -2);
+        Vector3 rowPos = new Vector3(0 - 0.5f, y - 0.5f, 0);
         var glowEffect = Instantiate(rowGlow, rowPos, Quaternion.identity);
         rowGlowPlayer = glowEffect.GetComponent<ParticlePlayer>();
         rowGlowPlayer.Play();
