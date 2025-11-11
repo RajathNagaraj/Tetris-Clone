@@ -127,7 +127,7 @@ public class Board : MonoBehaviour
 
     private void ClearRow(int y)
     {
-        Glow(y);
+
         for (int x = 0; x < m_width; ++x)
         {
             if (m_grid[x, y] != null)
@@ -178,6 +178,14 @@ public class Board : MonoBehaviour
     public void ClearAllRows()
     {
         m_rowsCompleted = 0;
+        for (int y = 0; y < m_height - m_header; ++y)
+        {
+            if (IsComplete(y))
+            {
+                Glow(y);
+            }
+        }
+
         for (int y = 0; y < m_height - m_header; ++y)
         {
             if (IsComplete(y))

@@ -7,18 +7,14 @@ public class ParticleBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        StartCoroutine(DestroyGeneratedParticle(1f)); 
+        StartCoroutine(DestroyGeneratedParticle(2f));
     }
 
-     private IEnumerator DestroyGeneratedParticle(float time)
+    private IEnumerator DestroyGeneratedParticle(float time)
     {
-        yield return new WaitForSeconds(time);        
+        yield return new WaitForSeconds(time);
         Destroy(gameObject);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }
