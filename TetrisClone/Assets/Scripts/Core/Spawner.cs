@@ -74,12 +74,12 @@ public class Spawner : MonoBehaviour
 
     private void Awake()
     {
-
+        InitQueue();
     }
     // Start is called before the first frame update
     void Start()
     {
-        InitQueue();
+
     }
 
     // Update is called once per frame

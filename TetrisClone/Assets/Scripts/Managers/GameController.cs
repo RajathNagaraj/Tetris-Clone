@@ -38,7 +38,7 @@ public class GameController : MonoBehaviour
 
         //Finding and caching references to all important components of the Game
         m_board = GameObject.FindGameObjectWithTag("Board").GetComponent<Board>();
-        m_spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<Spawner>();
+        m_spawner = FindFirstObjectByType<Spawner>();
         m_soundManager = FindFirstObjectByType<SoundManager>();
         m_scoreManager = FindFirstObjectByType<ScoreManager>();
         m_uiManager = FindFirstObjectByType<UIManager>();
