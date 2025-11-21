@@ -16,22 +16,37 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private GameObject LevelUpText;
 
+    void OnEnable()
+    {
+        //On levelling up, the Score Manager notifies the UIManager.
+        EventManager.OnLevelUpNotifyUI += LevelUp;
+        //OnUpdateUI is an action that passes the lines,level and score (in that order) to
+        //the UIManager 
+        EventManager.OnUpdateScoreUI += UpdateUI;
+    }
+
+    void OnDisable()
+    {
+        EventManager.OnLevelUpNotifyUI -= LevelUp;
+        EventManager.OnUpdateScoreUI -= UpdateUI;
+    }
+
 
     public void UpdateUI(int lines, int level, int score)
     {
-        if(m_linesText != null)
+        if (m_linesText != null)
         {
             m_linesText.text = lines.ToString();
         }
 
-        if(m_levelText != null)
+        if (m_levelText != null)
         {
             m_levelText.text = level.ToString();
         }
 
-        if(m_scoreText != null)
+        if (m_scoreText != null)
         {
-            m_scoreText.text = padZero(score,5);
+            m_scoreText.text = padZero(score, 5);
         }
     }
 
@@ -44,14 +59,14 @@ public class UIManager : MonoBehaviour
     private IEnumerator DisableLevelUpText(float timeToDisable)
     {
         yield return new WaitForSeconds(timeToDisable);
-        LevelUpText.SetActive(false);     
+        LevelUpText.SetActive(false);
     }
 
     private string padZero(int score, int padDigits)
     {
         string scoreString = score.ToString();
 
-        while(scoreString.Length < padDigits)
+        while (scoreString.Length < padDigits)
         {
             scoreString = "0" + scoreString;
         }
@@ -63,12 +78,12 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

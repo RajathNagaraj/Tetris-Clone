@@ -12,11 +12,10 @@ public class ScoreManager : MonoBehaviour
     //private const int m_MINLINES = 1;
     //private const int m_MAXLINES = 4;
 
-    public Action<int> OnLevelUp = delegate { };
 
-    public Action OnLevelUpNotifyUI = delegate { };
 
-    public Action<int, int, int> OnUpdateUI = delegate { };
+
+
 
     public void ScoreLines(int numberOfLines)
     {
@@ -42,14 +41,14 @@ public class ScoreManager : MonoBehaviour
         if (m_lines <= 0)
             LevelUp();
 
-        OnUpdateUI?.Invoke(m_lines, m_level, m_score);
+        EventManager.OnUpdateScoreUI?.Invoke(m_lines, m_level, m_score);
     }
 
     public void Reset()
     {
         m_level = 1;
         m_lines = m_linesPerLevel * m_level;
-        OnUpdateUI?.Invoke(m_lines, m_level, m_score);
+        EventManager.OnUpdateScoreUI?.Invoke(m_lines, m_level, m_score);
     }
 
 
@@ -57,8 +56,8 @@ public class ScoreManager : MonoBehaviour
     {
         m_level++;
         m_lines = m_linesPerLevel * m_level;
-        OnLevelUp?.Invoke(m_level);
-        OnLevelUpNotifyUI?.Invoke();
+        EventManager.OnLevelUp?.Invoke(m_level);
+        EventManager.OnLevelUpNotifyUI?.Invoke();
     }
 
     // Start is called before the first frame update

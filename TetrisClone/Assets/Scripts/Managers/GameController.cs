@@ -64,26 +64,26 @@ public class GameController : MonoBehaviour
             }
         }
 
+
+
+    }
+
+    private void OnEnable()
+    {
         //OnRowCompleted is an action present in the Board class that subscribes to
         //a lambda in this class, which in turn plays a sound upon clearing a row.
-        m_board.OnRowCompleted += () =>
+        EventManager.OnRowCompleted += () =>
         {
             PlaySound(m_soundManager.m_rowClearSound);
         };
 
         //This action gets triggered when all rows in the board are checked for clearing.
         //It passes the number of rows actually cleared to a method called UpdateScore.
-        //UpdateScore is used to update ScoreManager.
-        m_board.OnAllRowsCleared += UpdateScore;
+        EventManager.OnAllRowsCleared += UpdateScore;
 
-        //OnUpdateUI is an action that passes the lines,level and score (in that order) to
-        //the UIManager 
-        m_scoreManager.OnUpdateUI += m_uiManager.UpdateUI;
-
-        //ScoreManager notifies us when the Player levels up. 
         //Everytime Player levels up the drop interval shortens making
         //shapes fall faster.
-        m_scoreManager.OnLevelUp += (int level) =>
+        EventManager.OnLevelUp += (int level) =>
         {
             Invoke("PlayLevelUpVocalClip", 1f);
 
@@ -92,8 +92,12 @@ public class GameController : MonoBehaviour
             m_dropIntervalModded = Mathf.Clamp(m_dropInterval - ((level - 1) * 0.05f), 0.05f, 1f);
         };
 
-        //On levelling up, the Score Manager notifies the UIManager.
-        m_scoreManager.OnLevelUpNotifyUI += m_uiManager.LevelUp;
+
+
+    }
+
+    private void OnDisable()
+    {
 
     }
 

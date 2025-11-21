@@ -15,8 +15,8 @@ public class Board : MonoBehaviour
     public int m_header = 8;
     Transform[,] m_grid;
     public int m_rowsCompleted = 0;
-    public Action OnRowCompleted = delegate { };
-    public Action<int> OnAllRowsCleared = delegate { };
+
+
 
     private void Awake()
     {
@@ -138,7 +138,7 @@ public class Board : MonoBehaviour
 
             m_grid[x, y] = null;
         }
-        OnRowCompleted?.Invoke();
+        EventManager.OnRowCompleted?.Invoke();
 
 
     }
@@ -196,7 +196,7 @@ public class Board : MonoBehaviour
                 y--;
             }
         }
-        OnAllRowsCleared?.Invoke(m_rowsCompleted);
+        EventManager.OnAllRowsCleared?.Invoke(m_rowsCompleted);
     }
 
 
