@@ -41,14 +41,14 @@ public class ScoreManager : MonoBehaviour
         if (m_lines <= 0)
             LevelUp();
 
-        EventManager.OnUpdateScoreUI?.Invoke(m_lines, m_level, m_score);
+        GameEvents.OnUpdateScoreUI?.Invoke(m_lines, m_level, m_score);
     }
 
     public void Reset()
     {
         m_level = 1;
         m_lines = m_linesPerLevel * m_level;
-        EventManager.OnUpdateScoreUI?.Invoke(m_lines, m_level, m_score);
+        GameEvents.OnUpdateScoreUI?.Invoke(m_lines, m_level, m_score);
     }
 
 
@@ -56,8 +56,8 @@ public class ScoreManager : MonoBehaviour
     {
         m_level++;
         m_lines = m_linesPerLevel * m_level;
-        EventManager.OnLevelUp?.Invoke(m_level);
-        EventManager.OnLevelUpNotifyUI?.Invoke();
+        GameEvents.OnLevelUp?.Invoke(m_level);
+        GameEvents.OnLevelUpNotifyUI?.Invoke();
     }
 
     // Start is called before the first frame update

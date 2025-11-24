@@ -6,10 +6,6 @@ using UnityEngine;
 public class Board : MonoBehaviour
 {
     public Transform m_emptySprite;
-    public Transform rowGlow;
-
-    private ParticlePlayer rowGlowPlayer;
-
     public int m_height = 30;
     public int m_width = 10;
     public int m_header = 8;
@@ -138,19 +134,12 @@ public class Board : MonoBehaviour
 
             m_grid[x, y] = null;
         }
-        EventManager.OnRowCompleted?.Invoke();
+        GameEvents.OnRowCompleted?.Invoke();
 
 
     }
 
-    private void Glow(int y)
-    {
-        Vector3 rowPos = new Vector3(0 - 0.5f, y - 0.5f, 0);
-        var glowEffect = Instantiate(rowGlow, rowPos, Quaternion.identity);
-        rowGlowPlayer = glowEffect.GetComponent<ParticlePlayer>();
-        rowGlowPlayer.Play();
 
-    }
 
 
 
@@ -182,7 +171,7 @@ public class Board : MonoBehaviour
         {
             if (IsComplete(y))
             {
-                Glow(y);
+                GameEvents.OnRowGlow(y);
             }
         }
 
@@ -196,7 +185,7 @@ public class Board : MonoBehaviour
                 y--;
             }
         }
-        EventManager.OnAllRowsCleared?.Invoke(m_rowsCompleted);
+        GameEvents.OnAllRowsCleared?.Invoke(m_rowsCompleted);
     }
 
 

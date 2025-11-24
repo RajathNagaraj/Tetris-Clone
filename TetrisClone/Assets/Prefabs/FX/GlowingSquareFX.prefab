@@ -4914,6 +4914,7 @@ GameObject:
   - component: {fileID: 4793830782088441870}
   - component: {fileID: 5611786295084943996}
   - component: {fileID: 6580145516265337503}
+  - component: {fileID: 4682757768870724704}
   m_Layer: 0
   m_Name: GlowingSquareFX
   m_TagString: Untagged
@@ -9875,6 +9876,18 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &4682757768870724704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3980818657193928393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c46c5feddb1c0e0428216f497c577a59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ParticleBehaviour
 --- !u!1 &4383603127760595842
 GameObject:
   m_ObjectHideFlags: 0

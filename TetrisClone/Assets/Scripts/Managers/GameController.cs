@@ -72,18 +72,18 @@ public class GameController : MonoBehaviour
     {
         //OnRowCompleted is an action present in the Board class that subscribes to
         //a lambda in this class, which in turn plays a sound upon clearing a row.
-        EventManager.OnRowCompleted += () =>
+        GameEvents.OnRowCompleted += () =>
         {
             PlaySound(m_soundManager.m_rowClearSound);
         };
 
         //This action gets triggered when all rows in the board are checked for clearing.
         //It passes the number of rows actually cleared to a method called UpdateScore.
-        EventManager.OnAllRowsCleared += UpdateScore;
+        GameEvents.OnAllRowsCleared += UpdateScore;
 
         //Everytime Player levels up the drop interval shortens making
         //shapes fall faster.
-        EventManager.OnLevelUp += (int level) =>
+        GameEvents.OnLevelUp += (int level) =>
         {
             Invoke("PlayLevelUpVocalClip", 1f);
 
@@ -98,7 +98,7 @@ public class GameController : MonoBehaviour
 
     private void OnDisable()
     {
-
+        GameEvents.OnAllRowsCleared -= UpdateScore;
     }
 
     //The Level Up Vocal Clip is invoked after 1 second as we do not want many vocal clips playing at the same time
@@ -272,7 +272,7 @@ public class GameController : MonoBehaviour
             GameOver();
         }
 
-
+        GameEvents.OnLandShapeGlow?.Invoke(m_activeShape.transform);
         m_board.StoreShapeInGrid(m_activeShape);
 
         DestroyActiveShape();

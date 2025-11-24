@@ -19,16 +19,16 @@ public class UIManager : MonoBehaviour
     void OnEnable()
     {
         //On levelling up, the Score Manager notifies the UIManager.
-        EventManager.OnLevelUpNotifyUI += LevelUp;
+        GameEvents.OnLevelUpNotifyUI += LevelUp;
         //OnUpdateUI is an action that passes the lines,level and score (in that order) to
         //the UIManager 
-        EventManager.OnUpdateScoreUI += UpdateUI;
+        GameEvents.OnUpdateScoreUI += UpdateUI;
     }
 
     void OnDisable()
     {
-        EventManager.OnLevelUpNotifyUI -= LevelUp;
-        EventManager.OnUpdateScoreUI -= UpdateUI;
+        GameEvents.OnLevelUpNotifyUI -= LevelUp;
+        GameEvents.OnUpdateScoreUI -= UpdateUI;
     }
 
 

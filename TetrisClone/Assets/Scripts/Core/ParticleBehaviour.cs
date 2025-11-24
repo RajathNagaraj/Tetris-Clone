@@ -12,8 +12,12 @@ public class ParticleBehaviour : MonoBehaviour
 
     private IEnumerator DestroyGeneratedParticle(float time)
     {
+        var parent = transform.parent;
         yield return new WaitForSeconds(time);
-        Destroy(gameObject);
+        if (parent != null)
+            Destroy(parent.gameObject);
+        else
+            Destroy(gameObject);
     }
 
 
