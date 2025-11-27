@@ -10,5 +10,6 @@ public static class GameEvents
     public static Action<int, int, int> OnUpdateScoreUI = delegate { };
     public static Action<int> OnRowGlow = delegate { };
     public static Action<Transform> OnLandShapeGlow = delegate { };
+    public static Action OnGameOver = delegate { };
 
 }

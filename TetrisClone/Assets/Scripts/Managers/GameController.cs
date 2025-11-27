@@ -254,6 +254,7 @@ public class GameController : MonoBehaviour
     {
         m_activeShape.MoveUp();
         m_gameOver = true;
+        GameEvents.OnGameOver?.Invoke();
         m_gameOverPanel.SetActive(true);
         PlaySound(m_soundManager.m_gameOverSound);
         PlaySound(m_soundManager.m_gameOverVocalClip);
