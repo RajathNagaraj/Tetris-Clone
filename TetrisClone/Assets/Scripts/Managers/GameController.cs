@@ -99,6 +99,10 @@ public class GameController : MonoBehaviour
     private void OnDisable()
     {
         GameEvents.OnAllRowsCleared -= UpdateScore;
+
+        GameEvents.OnRowCompleted = null;
+
+        GameEvents.OnLevelUp = null;
     }
 
     //The Level Up Vocal Clip is invoked after 1 second as we do not want many vocal clips playing at the same time
@@ -235,6 +239,7 @@ public class GameController : MonoBehaviour
         {
             m_ghostShape.transform.position = m_activeShape.transform.position;
             m_ghostShape.transform.rotation = m_activeShape.transform.rotation;
+            m_ghostShape.transform.localScale = m_activeShape.transform.localScale;
         }
 
         m_ghostHitBottom = false;
@@ -252,13 +257,20 @@ public class GameController : MonoBehaviour
 
     private void GameOver()
     {
-        m_activeShape.MoveUp();
+        //m_activeShape.MoveUp();
         m_gameOver = true;
         GameEvents.OnGameOver?.Invoke();
-        m_gameOverPanel.SetActive(true);
+        GameEvents.OnCrossLineOfDeath?.Invoke();
+        StartCoroutine(DelayGameOverPanel());
         PlaySound(m_soundManager.m_gameOverSound);
         PlaySound(m_soundManager.m_gameOverVocalClip);
         Debug.Log("Game Over");
+    }
+
+    private IEnumerator DelayGameOverPanel()
+    {
+        yield return new WaitForSeconds(1f);
+        m_gameOverPanel.SetActive(true);
     }
 
     private void LandShape()

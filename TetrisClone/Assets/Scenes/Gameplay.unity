@@ -4857,6 +4857,9 @@ MonoBehaviour:
   backgroundSquaresFX: {fileID: 488686, guid: b0aacba59a60348939314aea22a5d176, type: 3}
   spaceDustFX: {fileID: 455376, guid: b4da473ce0e564c229b6862e98cc5f3c, type: 3}
   wormHoleFX: {fileID: 478574, guid: 284c0acc0732b467c917e3c6875bb143, type: 3}
+  shapeSpawnFX: {fileID: 420496, guid: 5666303b722e84b51affe16857a54d12, type: 3}
+  levelUpFX: {fileID: 482298, guid: 54dc086887f7d4b9bbc3b88cffa9883c, type: 3}
+  gameOverFX: {fileID: 401066, guid: bb266f46b1cf64146ba6d47074785030, type: 3}
 --- !u!1 &1914595124
 GameObject:
   m_ObjectHideFlags: 0

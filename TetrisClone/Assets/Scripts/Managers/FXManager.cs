@@ -8,6 +8,9 @@ public class FXManager : MonoBehaviour
     public Transform backgroundSquaresFX;
     public Transform spaceDustFX;
     public Transform wormHoleFX;
+    public Transform shapeSpawnFX;
+    public Transform levelUpFX;
+    public Transform gameOverFX;
     private GameObject particleExtrasObject;
     private ParticlePlayer rowGlowPlayer;
     private float duration = 10f;
@@ -24,12 +27,32 @@ public class FXManager : MonoBehaviour
         GameEvents.OnRowGlow += Glow;
         GameEvents.OnLandShapeGlow += LandShapeGlow;
         GameEvents.OnGameOver += StopFX;
+        GameEvents.OnSpawnShape += SpawnShapeFX;
+        GameEvents.OnCrossLineOfDeath += PlayGameOverFX;
+        GameEvents.OnLevelUp += (int level) =>
+        {
+            levelUpFX.GetComponent<ParticleSystem>().Play();
+        };
     }
+
+    private void PlayGameOverFX()
+    {
+        gameOverFX.GetComponent<ParticleSystem>().Play();
+    }
+
     void OnDisable()
     {
         GameEvents.OnRowGlow -= Glow;
         GameEvents.OnLandShapeGlow -= LandShapeGlow;
         GameEvents.OnGameOver -= StopFX;
+        GameEvents.OnSpawnShape -= SpawnShapeFX;
+        GameEvents.OnCrossLineOfDeath -= PlayGameOverFX;
+        GameEvents.OnLevelUp = null;
+    }
+
+    private void SpawnShapeFX(Vector3 position)
+    {
+        shapeSpawnFX.GetComponent<ParticleSystem>().Play();
     }
 
     private void LandShapeGlow(Transform shapeTransform)
@@ -45,14 +68,18 @@ public class FXManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        backgroundSquaresFX = Create(backgroundSquaresFX, new Vector3(3.5f, 12f, 0f));
-        spaceDustFX = Create(spaceDustFX, new Vector3(3f, 15f, 0f));
-        wormHoleFX = Create(wormHoleFX, new Vector3(4.5f, 25f, 0f));
+        backgroundSquaresFX = CreateFX(backgroundSquaresFX, new Vector3(3.5f, 12f, 0f));
+        spaceDustFX = CreateFX(spaceDustFX, new Vector3(3f, 15f, 0f));
+        wormHoleFX = CreateFX(wormHoleFX, new Vector3(4.5f, 25f, 0f));
+        shapeSpawnFX = CreateFX(shapeSpawnFX, new Vector3(4.5f, 25f, -1f));
+        levelUpFX = CreateFX(levelUpFX, new Vector3(4.5f, 10.5f, 0f));
+        gameOverFX = CreateFX(gameOverFX, new Vector3(4.5f, 10.5f, 0f));
+
 
         speed = 360f / duration;
     }
 
-    private Transform Create(Transform fxTransform, Vector3 position)
+    private Transform CreateFX(Transform fxTransform, Vector3 position)
     {
         fxTransform = Instantiate(fxTransform, position, Quaternion.identity);
         SetParent(fxTransform);

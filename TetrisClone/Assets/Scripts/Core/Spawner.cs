@@ -27,7 +27,24 @@ public class Spawner : MonoBehaviour
     {
         Shape shape = null;
         shape = Instantiate(GetRandomShape(), transform.position, Quaternion.identity);
+        GameEvents.OnSpawnShape?.Invoke(transform.position);
         return shape;
+    }
+
+    IEnumerator GrowShape(Shape shape, Vector3 position, float growTime = 0.5f)
+    {
+        float currentSize = 0f;
+        float maxSize = 1f;
+        growTime = Mathf.Clamp(growTime, 0.1f, 2f);
+        while (currentSize < 1f)
+        {
+            float sizeDelta = maxSize / growTime * Time.deltaTime;
+            currentSize += sizeDelta;
+            shape.transform.localScale = new Vector3(currentSize, currentSize, currentSize);
+            shape.transform.position = position;
+            yield return null;
+        }
+        shape.transform.localScale = Vector3.one;
     }
 
     private void InitQueue()
@@ -68,7 +85,8 @@ public class Spawner : MonoBehaviour
         queuedShape.transform.position = transform.position;
         m_shapeQueue[m_shapeQueue.Length - 1] = null;
         FillQueue();
-        queuedShape.transform.localScale = Vector3.one;
+        StartCoroutine(GrowShape(queuedShape, transform.position, 0.25f));
+        //queuedShape.transform.localScale = Vector3.one;
         return queuedShape;
     }
 
