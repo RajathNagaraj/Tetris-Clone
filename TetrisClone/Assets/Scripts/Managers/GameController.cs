@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class GameController : MonoBehaviour
 {
@@ -28,6 +30,13 @@ public class GameController : MonoBehaviour
     private bool m_clockwise = true;
     public bool m_isPaused = false;
     public GameObject m_pausePanel;
+    private PlayerControls m_playerControls;
+    void Awake()
+    {
+        m_playerControls = new PlayerControls();
+
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -92,13 +101,58 @@ public class GameController : MonoBehaviour
             m_dropIntervalModded = Mathf.Clamp(m_dropInterval - ((level - 1) * 0.05f), 0.05f, 1f);
         };
 
+        m_playerControls.Gameplay.Enable();
+
+        m_playerControls.Gameplay.MoveLeft.performed += ctx => MoveLeft();
+        m_playerControls.Gameplay.MoveRight.performed += ctx => MoveRight();
+        m_playerControls.Gameplay.Rotate.performed += ctx => RotateShape();
+        m_playerControls.Gameplay.FallFaster.started += ctx => FallFaster(true);
+        m_playerControls.Gameplay.FallFaster.canceled += ctx => FallFaster(false);
 
 
+
+    }
+
+    private void FallFaster(bool m_isDroppingFast)
+    {
+        if (m_isDroppingFast)
+            m_dropIntervalModded /= 4;
+        else
+            m_dropIntervalModded *= 4;
+    }
+
+    private void RotateShape()
+    {
+        //If the button corresponding to Rotate has been detected within the alloted time frame?
+        if (Time.time > m_timeToNextKey)
+        {
+            ProcessInput(() => m_activeShape.RotateClockwise(m_clockwise), () => m_activeShape.RotateClockwise(!m_clockwise));
+        }
+    }
+
+    private void MoveRight()
+    {
+        //If the button corresponding to MoveRight has been detected within the alloted time frame?
+        if (Time.time > m_timeToNextKey)
+        {
+            ProcessInput(() => m_activeShape.MoveRight(), () => m_activeShape.MoveLeft());
+        }
+    }
+
+    private void MoveLeft()
+    {
+        //If the button corresponding to MoveLeft has been detected within the alloted time frame?
+        if (Time.time > m_timeToNextKey)
+        {
+            ProcessInput(() => m_activeShape.MoveLeft(), () => m_activeShape.MoveRight());
+        }
     }
 
     private void OnDisable()
     {
         GameEvents.OnAllRowsCleared -= UpdateScore;
+
+        m_playerControls.Gameplay.Disable();
 
         GameEvents.OnRowCompleted = null;
 
@@ -130,8 +184,8 @@ public class GameController : MonoBehaviour
         {
             return;
         }
-        //Check for Player Input every Update.
-        PlayerInput();
+        //Lower the Shape at constant intervals.
+        DropShape();
     }
 
     void LateUpdate()
@@ -148,38 +202,9 @@ public class GameController : MonoBehaviour
         Time.timeScale = 1f;
         SceneManager.LoadScene("Gameplay");
     }
-
-    void PlayerInput()
+    //Drop Shape Logic
+    void DropShape()
     {
-        //If the button corresponding to Input Axis MoveRight has been detected within the alloted time frame?
-        if ((Input.GetButton("MoveRight") && Time.time > m_timeToNextKey) || Input.GetButtonDown("MoveRight"))
-        {
-            ProcessInput(() => m_activeShape.MoveRight(), () => m_activeShape.MoveLeft());
-        }
-
-        //If the button corresponding to Input Axis MoveLeft has been detected within the alloted time frame?
-        else if ((Input.GetButton("MoveLeft") && Time.time > m_timeToNextKey) || Input.GetButtonDown("MoveLeft"))
-        {
-            ProcessInput(() => m_activeShape.MoveLeft(), () => m_activeShape.MoveRight());
-        }
-
-        //If the button corresponding to Rotate has been pressed?
-        else if (Input.GetButtonDown("Rotate"))
-        {
-            ProcessInput(() => m_activeShape.RotateClockwise(m_clockwise), () => m_activeShape.RotateClockwise(!m_clockwise));
-        }
-
-        //Speed up the shape on pressing MoveDown
-        else if (Input.GetButtonDown("MoveDown"))
-        {
-            m_dropIntervalModded /= 4;
-        }
-
-        //Restore the original speed on releasing MoveDown button.
-        if (Input.GetButtonUp("MoveDown"))
-        {
-            m_dropIntervalModded *= 4;
-        }
 
         if (Time.time > m_timeToDrop)
         {
