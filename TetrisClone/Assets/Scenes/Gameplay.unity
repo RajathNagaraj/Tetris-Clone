@@ -663,6 +663,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraScaler
   designWorldWidth: 20
+  designWorldHeight: 30
 --- !u!1 &152485690
 GameObject:
   m_ObjectHideFlags: 0
