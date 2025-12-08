@@ -26,15 +26,16 @@ public class GameController : MonoBehaviour
     private UIManager m_uiManager;
     private Holder m_holder;
     private Camera mainCamera;
+    private InputSetup m_inputSetup;
+    private TouchGestures m_touchGestures;
     public IconToggle m_rotIconToggle;
     private bool m_clockwise = true;
     public bool m_isPaused = false;
     public GameObject m_pausePanel;
-    private PlayerControls m_playerControls;
+    public PlayerControls m_playerControls;
     void Awake()
     {
         m_playerControls = new PlayerControls();
-
     }
 
     // Start is called before the first frame update
@@ -52,6 +53,11 @@ public class GameController : MonoBehaviour
         m_scoreManager = FindFirstObjectByType<ScoreManager>();
         m_uiManager = FindFirstObjectByType<UIManager>();
         m_holder = FindFirstObjectByType<Holder>();
+        m_inputSetup = FindFirstObjectByType<InputSetup>();
+        m_touchGestures = FindFirstObjectByType<TouchGestures>();
+
+        m_inputSetup.SetupControls(m_playerControls);
+        m_touchGestures.SetupTouch(m_playerControls);
 
         mainCamera = Camera.main;
 
@@ -103,14 +109,24 @@ public class GameController : MonoBehaviour
 
         m_playerControls.Gameplay.Enable();
 
-        m_playerControls.Gameplay.MoveLeft.performed += ctx => MoveLeft();
-        m_playerControls.Gameplay.MoveRight.performed += ctx => MoveRight();
-        m_playerControls.Gameplay.Rotate.performed += ctx => RotateShape();
-        m_playerControls.Gameplay.FallFaster.started += ctx => FallFaster(true);
-        m_playerControls.Gameplay.FallFaster.canceled += ctx => FallFaster(false);
+        SubscribeToInputEvents();
 
+    }
 
+    private void SubscribeToInputEvents()
+    {
+        GameEvents.OnMoveShapeLeft += MoveLeft;
+        GameEvents.OnMoveShapeRight += MoveRight;
+        GameEvents.OnRotateShape += RotateShape;
+        GameEvents.OnShapeFallFaster += FallFaster;
+    }
 
+    private void UnsubscribeFromInputEvents()
+    {
+        GameEvents.OnMoveShapeLeft -= MoveLeft;
+        GameEvents.OnMoveShapeRight -= MoveRight;
+        GameEvents.OnRotateShape -= RotateShape;
+        GameEvents.OnShapeFallFaster -= FallFaster;
     }
 
     private void FallFaster(bool m_isDroppingFast)
@@ -157,6 +173,8 @@ public class GameController : MonoBehaviour
         GameEvents.OnRowCompleted = null;
 
         GameEvents.OnLevelUp = null;
+
+        UnsubscribeFromInputEvents();
     }
 
     //The Level Up Vocal Clip is invoked after 1 second as we do not want many vocal clips playing at the same time

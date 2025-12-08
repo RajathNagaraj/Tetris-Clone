@@ -13,5 +13,9 @@ public static class GameEvents
     public static Action<Transform> OnLandShapeGlow = delegate { };
     public static Action OnGameOver = delegate { };
     public static Action OnCrossLineOfDeath = delegate { };
+    public static Action OnRotateShape = delegate { };
+    public static Action OnMoveShapeLeft = delegate { };
+    public static Action OnMoveShapeRight = delegate { };
+    public static Action<bool> OnShapeFallFaster = delegate { };
 
 }
