@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.EnhancedTouch;
+using UnityEngine.UI;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 public class TouchGestures : MonoBehaviour
@@ -14,6 +17,7 @@ public class TouchGestures : MonoBehaviour
     private int activeFingerIndex = -1;   // -1 = no finger locked
     private FingerState s;
     private double longPressDuration = 0.5f;
+    static readonly List<RaycastResult> _uiHits = new();
 
 
 
@@ -32,6 +36,26 @@ public class TouchGestures : MonoBehaviour
         Touch.onFingerDown += OnFingerDown;
         Touch.onFingerMove += OnFingerMove;
         Touch.onFingerUp += OnFingerUp;
+    }
+
+    bool IsOverInteractiveUI(Vector2 screenPosition)
+    {
+        if (EventSystem.current == null)
+            return false; // no EventSystem => don't block gameplay
+
+        var data = new PointerEventData(EventSystem.current) { position = screenPosition };
+        _uiHits.Clear();
+        EventSystem.current.RaycastAll(data, _uiHits); // raycast UI under that screen point 
+
+        for (int i = 0; i < _uiHits.Count; i++)
+        {
+            var go = _uiHits[i].gameObject;
+
+            // Block only for actual interactables.
+            if (go.GetComponentInParent<Selectable>() != null) // Button derives from Selectable
+                return true;
+        }
+        return false;
     }
 
     void OnFingerUp(Finger finger)
@@ -112,8 +136,14 @@ public class TouchGestures : MonoBehaviour
     {
         if (activeFingerIndex != -1) return;
 
-        activeFingerIndex = finger.index;
         var t = finger.currentTouch;
+
+        if (IsOverInteractiveUI(t.screenPosition))
+            return;
+
+
+        activeFingerIndex = finger.index;
+
 
         s = new FingerState
         {
