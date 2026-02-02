@@ -57,7 +57,7 @@ public class GameController : MonoBehaviour
         m_touchGestures = FindFirstObjectByType<TouchGestures>();
 
         m_inputSetup.SetupControls(m_playerControls);
-        m_touchGestures.SetupTouch(m_playerControls);
+
 
         mainCamera = Camera.main;
 

@@ -1,44 +1,162 @@
+using System;
 using System.Diagnostics;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.EnhancedTouch;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 public class TouchGestures : MonoBehaviour
 {
 
-    private bool isFastFalling;
-    private Vector2 touchStartPos;
     public float minSwipeDist = 50f;  // pixels
-    public float maxTapDist = 20f;    // for rotate tap
+    public float maxSwipeTime = 0.35f;
+    private float longPressMoveTolerancePx = 25f;
 
-    public void SetupTouch(PlayerControls controls)
+    private int activeFingerIndex = -1;   // -1 = no finger locked
+    private FingerState s;
+    private double longPressDuration = 0.5f;
+
+
+
+    struct FingerState
     {
-        controls.Gameplay.Touch.started += OnTouchStart;
-        controls.Gameplay.Touch.canceled += OnTouchEnd;
+        public Vector2 startPos;
+        public double startTime;
+        public bool longPressStarted;
+        public bool movedTooMuchForLongPress;
     }
 
 
-    void OnTouchStart(InputAction.CallbackContext ctx)
+    void OnEnable()
     {
-        var primary = Touchscreen.current.primaryTouch;
-        touchStartPos = primary.position.ReadValue();
+        EnhancedTouchSupport.Enable();
+        Touch.onFingerDown += OnFingerDown;
+        Touch.onFingerMove += OnFingerMove;
+        Touch.onFingerUp += OnFingerUp;
     }
 
-    void OnTouchEnd(InputAction.CallbackContext ctx)
+    void OnFingerUp(Finger finger)
     {
-        var primary = Touchscreen.current.primaryTouch;
-        Vector2 touchEndPos = primary.position.ReadValue();
-        Vector2 delta = touchEndPos - touchStartPos;
-        float dist = delta.magnitude;
+        if (finger.index != activeFingerIndex) return;
 
-        ProcessSwipeAction(delta, dist);
-    }
+        var t = finger.currentTouch;
+        var dt = t.time - s.startTime;
+        var delta = t.screenPosition - s.startPos;
 
-    void ProcessSwipeAction(Vector2 delta, float dist)
-    {
-        if (Mathf.Abs(delta.x) > minSwipeDist && dist > maxTapDist)
+        if (s.longPressStarted)
         {
-            if (delta.x < 0) GameEvents.OnMoveShapeLeft?.Invoke();
-            else GameEvents.OnMoveShapeRight?.Invoke();
+            OnLongPressEnd();
+            ResetLock();
+            return;
+        }
+
+        if (dt <= maxSwipeTime &&
+            Mathf.Abs(delta.x) >= minSwipeDist &&
+            Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
+        {
+            if (delta.x > 0) OnSwipeRight();
+            else OnSwipeLeft();
+            ResetLock();
+            return;
+        }
+
+        if (t.isTap) OnTap();
+        ResetLock();
+    }
+
+    private void OnLongPressEnd()
+    {
+        GameEvents.OnShapeFallFaster?.Invoke(false);
+    }
+
+    private void OnLongPressStart()
+    {
+        GameEvents.OnShapeFallFaster?.Invoke(true);
+    }
+
+    private void OnSwipeLeft()
+    {
+        GameEvents.OnMoveShapeLeft?.Invoke();
+    }
+
+    private void OnSwipeRight()
+    {
+        GameEvents.OnMoveShapeRight?.Invoke();
+    }
+
+    private void OnTap()
+    {
+        GameEvents.OnRotateShape?.Invoke();
+    }
+
+    void ResetLock()
+    {
+        activeFingerIndex = -1;
+        s = default;
+    }
+
+    private void OnFingerMove(Finger finger)
+    {
+        if (finger.index != activeFingerIndex) return;
+
+        var t = finger.currentTouch;
+
+        if (!s.movedTooMuchForLongPress)
+        {
+            if ((t.screenPosition - s.startPos).sqrMagnitude >
+                longPressMoveTolerancePx * longPressMoveTolerancePx)
+                s.movedTooMuchForLongPress = true;
         }
     }
+
+    private void OnFingerDown(Finger finger)
+    {
+        if (activeFingerIndex != -1) return;
+
+        activeFingerIndex = finger.index;
+        var t = finger.currentTouch;
+
+        s = new FingerState
+        {
+            startPos = t.screenPosition,
+            startTime = t.startTime,
+            longPressStarted = false,
+            movedTooMuchForLongPress = false
+        };
+    }
+
+    void OnDisable()
+    {
+        Touch.onFingerDown -= OnFingerDown;
+        Touch.onFingerMove -= OnFingerMove;
+        Touch.onFingerUp -= OnFingerUp;
+        EnhancedTouchSupport.Disable();
+    }
+
+    void Update()
+    {
+        if (activeFingerIndex == -1) return;
+
+        // Find the currently active finger that matches our locked index.
+        // Touch.activeFingers is the set of fingers currently touching the screen. 
+        Finger lockedFinger = null;
+        foreach (var f in Touch.activeFingers)
+            if (f.index == activeFingerIndex) { lockedFinger = f; break; }
+
+        if (lockedFinger == null) return;
+
+        if (s.longPressStarted || s.movedTooMuchForLongPress) return;
+
+        var t = lockedFinger.currentTouch;
+        if (t.time - s.startTime >= longPressDuration)
+        {
+            s.longPressStarted = true;
+            OnLongPressStart();
+        }
+    }
+
+
 }
+
+
+
+
